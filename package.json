@@ -1,0 +1,24 @@
+{
+  "name": "rbac_node_impl",
+  "version": "1.0.0",
+  "description": "Role Based Access Control implementation",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hane-smitter/RBAC_node_impl.git"
+  },
+  "keywords": [
+    "RBAC",
+    "user",
+    "permissions"
+  ],
+  "author": "smitter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hane-smitter/RBAC_node_impl/issues"
+  },
+  "homepage": "https://github.com/hane-smitter/RBAC_node_impl#readme"
+}
