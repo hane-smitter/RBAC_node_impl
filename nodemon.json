@@ -1,0 +1,7 @@
+{
+  "watch": ["src/main.ts"],
+  "ext": "ts",
+  "exec": "npm run build && npm start",
+  "ignore": ["dist/*"],
+  "verbose": true
+}
