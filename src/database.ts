@@ -92,7 +92,7 @@ export const AppDataSource = new CustomDataSource({
   username: mySqldbConfigs.username,
   password: mySqldbConfigs.password,
   database: mySqldbConfigs.database,
-  entities: ["entities/**/*.ts"],
+  entities: ["dist/entities/**/*.js"],
   synchronize: process.env.NODE_ENV !== "production",
-  // logging: true,
+  logging: true,
 });

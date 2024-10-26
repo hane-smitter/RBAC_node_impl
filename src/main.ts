@@ -16,8 +16,10 @@ app.get("/", (req, res) => {
 
 // Connect to DB
 AppDataSource.initialize()
-  .then(() => {
+  .then(async () => {
     console.log("DB connected");
+    // Run migrations
+    await AppDataSource.runMigrations();
     app.emit("dbConnected");
   })
   .catch((error) => {
