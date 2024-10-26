@@ -1,4 +1,7 @@
+import "dotenv/config";
+import "reflect-metadata";
 import express from "express";
+import { AppDataSource } from "./database";
 
 // Create an Express application
 const app = express();
@@ -11,7 +14,20 @@ app.get("/", (req, res) => {
   res.send("Hello, TypeScript + Node.js + Express!");
 });
 
-// Start the server and listen on the specified port
-app.listen(PORT, () => {
-  console.log(`Server is running on http://127.0.0.1:${PORT}`);
+// Connect to DB
+AppDataSource.initialize()
+  .then(() => {
+    console.log("DB connected");
+    app.emit("dbConnected");
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// Listen for the 'dbConnected' event and start the server
+app.on("dbConnected", () => {
+  // Start the server and listen on the specified port
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 });

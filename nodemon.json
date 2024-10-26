@@ -1,6 +1,6 @@
 {
-  "watch": ["src/main.ts"],
-  "ext": "ts",
+  "watch": ["src/"],
+  "ext": "ts,json",
   "exec": "npm run build && npm start",
   "ignore": ["dist/*"],
   "verbose": true
