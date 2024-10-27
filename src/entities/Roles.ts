@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  ManyToMany,
+  JoinTable,
+} from "typeorm";
+import { Users } from "./Users";
+import { Permissions } from "./Permissions";
 
 @Entity()
 export class Roles extends BaseEntity {
@@ -10,4 +19,11 @@ export class Roles extends BaseEntity {
 
   @Column({ type: "text" })
   description!: string;
+
+  @ManyToMany(() => Users, (users) => users.roles)
+  users!: Users[];
+
+  @ManyToMany(() => Permissions, (permissions) => permissions.roles)
+  @JoinTable({ name: "roles_permissions" })
+  permissions!: Permissions[];
 }

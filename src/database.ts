@@ -95,4 +95,5 @@ export const AppDataSource = new CustomDataSource({
   entities: ["dist/entities/**/*.js"],
   synchronize: process.env.NODE_ENV !== "production",
   logging: true,
+  migrations: ["dist/migrations/*.js"],
 });

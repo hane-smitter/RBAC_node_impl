@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  ManyToMany,
+} from "typeorm";
+import { Roles } from "./Roles";
 
 @Entity()
 export class Permissions extends BaseEntity {
@@ -8,9 +15,14 @@ export class Permissions extends BaseEntity {
   @Column()
   name!: string;
 
-  @Column({ type: "bigint" })
+  // This column will be auto filled with MySQL trigger
+  // refer; `migrations/1729947215244-CreatePermissionsTrigger.ts`
+  @Column({ type: "bigint", unique: true })
   serial_id!: string;
 
   @Column({ type: "text" })
   description!: string;
+
+  @ManyToMany(() => Roles, (roles) => roles.permissions)
+  roles!: Roles[];
 }
