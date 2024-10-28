@@ -9,7 +9,7 @@ import {
 import { Roles } from "./Roles";
 
 @Entity()
-export class Users extends BaseEntity {
+export class Users {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -21,6 +21,9 @@ export class Users extends BaseEntity {
 
   @Column()
   age!: number;
+
+  // @Column()
+  // email!: number;
 
   @ManyToMany(() => Roles, (roles) => roles.users)
   @JoinTable({ name: "users_roles" })

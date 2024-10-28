@@ -1,23 +1,38 @@
 import "dotenv/config";
 import "reflect-metadata";
 import express from "express";
+
 import { AppDataSource } from "./database";
 import { CreatePermissionsTrigger1729947215244 } from "./migrations/1729947215244-CreatePermissionsTrigger";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
+const apiRouter = express.Router();
+
+// Main middlewares
+app.use(express.json());
 
 // Server port number
 const PORT = parseInt(String(process.env.sever_port)) || 3000;
 
-// Define a route for the root path ('/')
+// Application Routes
 app.get("/", (req, res) => {
   res.send("Hello, TypeScript + Node.js + Express!");
+});
+
+apiRouter.use("/users", userRoutes);
+// apiRouter.use("/another-base-route", otherRoutes);
+app.use("/api/v1", apiRouter);
+
+// Catch-all route for 404
+app.use((req, res) => {
+  res.status(404).json({ err: "404 Not Found" });
 });
 
 // Connect to DB
 AppDataSource.initialize()
   .then(async () => {
-    // Run a migration file - Responsible to auto generate serial id for a new permission ADDED.
+    // Run migration file - To add MySQL trigger
     const tblPermissionsAutoSerialId =
       new CreatePermissionsTrigger1729947215244();
     await tblPermissionsAutoSerialId.down(AppDataSource.createQueryRunner());
