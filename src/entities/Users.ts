@@ -25,7 +25,7 @@ export class Users {
   // @Column()
   // email!: number;
 
-  @ManyToMany(() => Roles, (roles) => roles.users)
+  @ManyToMany(() => Roles, (roles) => roles.users, { cascade: true })
   @JoinTable({ name: "users_roles" })
   roles!: Roles[];
 }
