@@ -5,6 +5,7 @@ import express from "express";
 import { AppDataSource } from "./database";
 import { CreatePermissionsTrigger1729947215244 } from "./migrations/1729947215244-CreatePermissionsTrigger";
 import userRoutes from "./routes/user.routes";
+import roleRoutes from "./routes/role.routes";
 
 const app = express();
 const apiRouter = express.Router();
@@ -21,7 +22,7 @@ app.get("/", (req, res) => {
 });
 
 apiRouter.use("/users", userRoutes);
-// apiRouter.use("/another-base-route", otherRoutes);
+apiRouter.use("/roles", roleRoutes);
 app.use("/api/v1", apiRouter);
 
 // Catch-all route for 404

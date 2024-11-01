@@ -5,11 +5,13 @@ import {
   BaseEntity,
   ManyToMany,
   JoinTable,
+  Unique,
 } from "typeorm";
 import { Users } from "./Users";
 import { Permissions } from "./Permissions";
 
 @Entity()
+@Unique(["name"])
 export class Roles extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
