@@ -1,7 +1,11 @@
 import { Router } from "express";
 
 import { RoleController } from "../controllers/roles.controller";
-import { CreateRoleDto, UpdateRoleDto } from "../dtos/role.dto";
+import {
+  CreateRoleDto,
+  RolePermissionsDto,
+  UpdateRoleDto,
+} from "../dtos/role.dto";
 import { validationMiddleware } from "../middleware/validation.middleware";
 
 const router = Router();
@@ -25,5 +29,18 @@ router.patch(
 
 // Delete a role
 router.delete("/:id", rolesController.delete);
+
+// PERMISSIONS
+router.get("/:id/permissions", rolesController.listPermission);
+router.patch(
+  "/:id/permissions/add",
+  validationMiddleware(RolePermissionsDto),
+  rolesController.addPermission
+);
+router.patch(
+  "/:id/permissions/remove",
+  validationMiddleware(RolePermissionsDto),
+  rolesController.dropPermission
+);
 
 export default router;

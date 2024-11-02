@@ -1,4 +1,6 @@
-import { IsString, IsOptional, IsDefined } from "class-validator";
+import { IsString, IsOptional, IsArray } from "class-validator";
+
+import { Permissions } from "../entities/Permissions";
 
 export class CreateRoleDto {
   @IsString({ message: "role name is a string and is required" })
@@ -10,6 +12,11 @@ export class CreateRoleDto {
   // @IsArray()
   // @IsOptional()
   // permissions?: Permissions["id"][]; // `@IsOptional()` because it Will default to a `permission` from the controller
+}
+
+export class RolePermissionsDto {
+  @IsArray()
+  permissions!: Permissions["id"][];
 }
 
 export class UpdateRoleDto {
@@ -24,4 +31,10 @@ export class UpdateRoleDto {
   // @IsArray()
   // @IsOptional()
   // permissions?: Permissions["id"][];
+}
+
+export class UpdateRolePermissionsDto {
+  @IsArray()
+  @IsOptional()
+  permissions?: Permissions["id"][];
 }

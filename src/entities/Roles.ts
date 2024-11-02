@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BaseEntity,
   ManyToMany,
   JoinTable,
   Unique,
@@ -11,12 +10,11 @@ import { Users } from "./Users";
 import { Permissions } from "./Permissions";
 
 @Entity()
-@Unique(["name"])
-export class Roles extends BaseEntity {
+export class Roles {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   name!: string;
 
   @Column({ type: "text" })
@@ -26,7 +24,7 @@ export class Roles extends BaseEntity {
   users!: Users[];
 
   @ManyToMany(() => Permissions, (permissions) => permissions.roles, {
-    cascade: true,
+    onDelete: "CASCADE",
   })
   @JoinTable({ name: "roles_permissions" })
   permissions!: Permissions[];
