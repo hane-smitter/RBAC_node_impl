@@ -2,17 +2,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BaseEntity,
   ManyToMany,
+  Unique,
 } from "typeorm";
 import { Roles } from "./Roles";
 
 @Entity()
-export class Permissions extends BaseEntity {
+@Unique(["name"])
+export class Permissions {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   name!: string;
 
   // This column will be auto filled with MySQL trigger
@@ -23,6 +24,8 @@ export class Permissions extends BaseEntity {
   @Column({ type: "text" })
   description!: string;
 
-  @ManyToMany(() => Roles, (roles) => roles.permissions)
+  @ManyToMany(() => Roles, (roles) => roles.permissions, {
+    onDelete:"CASCADE"
+  })
   roles!: Roles[];
 }
