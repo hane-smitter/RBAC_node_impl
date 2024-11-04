@@ -15,8 +15,9 @@ export function validationMiddleware<T extends object>(
 
     if (errors.length > 0) {
       const formattedErrors = errors.map((error) => ({
-        field: error.property,
-        constraints: error.constraints,
+        // field: error.property,
+        // constraints: error.constraints,
+        [error.property]: Object.values(error.constraints || {}),
       }));
       res.status(400).json({
         status: "error",

@@ -51,7 +51,7 @@ export class PermissionController {
       if (dupPermission) {
         res.status(400).json({
           status: "failed",
-          msg: `The permission - ${permissionData.name} already exists!`,
+          msg: `The permission name - \`${permissionData.name}\` already exists!`,
         });
         return;
       }
@@ -75,7 +75,7 @@ export class PermissionController {
 
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const permissionId = parseInt(req.params.id);
+      const permissionID = parseInt(req.params.id);
 
       const validUpdateKeys = ["name", "description"];
       const incomingUpdate = req.body;
@@ -94,11 +94,29 @@ export class PermissionController {
         return;
       }
 
-      await this.#permissionsRepo.update(permissionId, validUpdateData);
+      // Check if `validUpdateData.name` is taken
+      if (validUpdateData.name) {
+        const permission = await this.#permissionsRepo.findOne({
+          where: { name: validUpdateData.name },
+        });
+
+        if (permission) {
+          res.status(400).json({
+            status: "failed",
+            msg: `\`name\` ${validUpdateData.name} already taken!`,
+          });
+          return;
+        }
+      }
+
+      const { affected } = await this.#permissionsRepo.update(
+        permissionID,
+        validUpdateData
+      );
 
       res.status(200).json({
         status: "success",
-        msg: "Permission updated!",
+        msg: `${affected} Permission updated`,
       });
       return;
     } catch (error) {
@@ -116,11 +134,10 @@ export class PermissionController {
       const permissionID = parseInt(req.params.id);
 
       // Related records in the junction table will be deleted bcoz `{ onDelete: "CASCADE" }` is set in entities definition
-      const result = await this.#permissionsRepo.delete(permissionID);
-      console.log("Results:: ", result);
+      const { affected } = await this.#permissionsRepo.delete(permissionID);
       res.json({
         status: "success",
-        msg: "Permission deleted successfully",
+        msg: `${affected} Permission deleted`,
       });
     } catch (error) {
       console.log(error);

@@ -1,10 +1,12 @@
-import { IsString, IsOptional } from "class-validator";
+import { IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 export class CreatePermissionDto {
-  @IsString({ message: "permission name is a string and is required" })
+  @IsString()
+  @IsNotEmpty({ message: "`name` cannot be empty!" })
   name!: string;
 
-  @IsString({ message: "permission description is a string and is required" })
+  @IsString()
+  @IsNotEmpty({ message: "`description` cannot be empty!" })
   description!: string;
 }
 
