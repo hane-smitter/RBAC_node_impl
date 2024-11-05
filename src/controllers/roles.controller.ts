@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type { Repository } from "typeorm";
 
 import { Roles } from "../entities/Roles";
 import {
@@ -8,7 +9,6 @@ import {
 } from "../dtos/role.dto";
 import { AppDataSource } from "../database";
 import { Permissions } from "../entities/Permissions";
-import { type Repository } from "typeorm";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
@@ -21,6 +21,7 @@ export class RoleController {
     this.#permissionsRepo = getRepo(Permissions);
   }
 
+  /** Gets all roles */
   read = async (req: Request, res: Response) => {
     try {
       const roles = await this.#rolesRepo.find();
@@ -34,6 +35,7 @@ export class RoleController {
     }
   };
 
+  /** Gets role identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID = parseInt(req.params.id);
@@ -51,6 +53,7 @@ export class RoleController {
     }
   };
 
+  /** Creates new role */
   create = async (req: Request, res: Response) => {
     try {
       const roleData: CreateRoleDto = req.body;
@@ -84,9 +87,10 @@ export class RoleController {
     }
   };
 
+  /** Updates role identified by `id` */
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const roleId = parseInt(req.params.id);
+      const roleID = parseInt(req.params.id);
 
       const validUpdateKeys = ["name", "description"];
       const incomingUpdate = req.body;
@@ -105,7 +109,7 @@ export class RoleController {
         return;
       }
 
-      await this.#rolesRepo.update(roleId, validUpdateData);
+      await this.#rolesRepo.update(roleID, validUpdateData);
 
       res.status(200).json({
         status: "success",
@@ -122,6 +126,7 @@ export class RoleController {
     }
   };
 
+  /** Deletes role identified by `id` */
   delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID = parseInt(req.params.id);
@@ -143,12 +148,13 @@ export class RoleController {
   };
 
   /* PERMISSIONS */
+  /** Gets permissions assigned to a role identified by `id` */
   listPermission = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const roleId: number = parseInt(req.params.id);
+      const roleID: number = parseInt(req.params.id);
 
       const roleWithPermissions = await this.#rolesRepo.findOne({
-        where: { id: roleId },
+        where: { id: roleID },
         relations: ["permissions"],
       });
 
@@ -162,15 +168,15 @@ export class RoleController {
     }
   };
 
+  /** Sets permission(s) on a role identified by `id` */
   addPermission = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const roleRepository = this.#rolesRepo;
-      const roleId: number = parseInt(req.params.id);
+      const roleID: number = parseInt(req.params.id);
       const incomingUpdate: RolePermissionsDto = req.body;
-      const permissionIds = incomingUpdate.permissions;
+      const permissionIDs = incomingUpdate.permissions;
 
       const roleWithPermissions = await this.#rolesRepo.findOne({
-        where: { id: roleId },
+        where: { id: roleID },
         relations: ["permissions"],
       });
       if (!roleWithPermissions) {
@@ -183,9 +189,9 @@ export class RoleController {
 
       const existingPermissions = roleWithPermissions.permissions;
       const newPermissions = await Promise.all(
-        permissionIds.map(async (permissionId) => {
+        permissionIDs.map(async (permissionID) => {
           const permission = await this.#permissionsRepo.findOne({
-            where: { id: permissionId },
+            where: { id: permissionID },
           });
 
           return permission;
@@ -200,11 +206,11 @@ export class RoleController {
         ...newPermissions,
       ];
 
-      await roleRepository.save(roleWithPermissions);
+      await this.#rolesRepo.save(roleWithPermissions);
 
       res.status(200).json({
         status: "success",
-        msg: "Permissions found added to role successfully!",
+        msg: "Valid permissions added to role",
       });
     } catch (error) {
       res
@@ -213,13 +219,14 @@ export class RoleController {
     }
   };
 
+  /** Drops permission(s) on a role identified by `id` */
   dropPermission = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const roleId: number = parseInt(req.params.id);
+      const roleID: number = parseInt(req.params.id);
       const incomingPermissionRemoval: RolePermissionsDto = req.body;
 
       const roleWthPermissions = await this.#rolesRepo.findOne({
-        where: { id: roleId },
+        where: { id: roleID },
         relations: ["permissions"],
       });
 
@@ -244,7 +251,7 @@ export class RoleController {
 
       res.status(200).json({
         status: "success",
-        msg: "Permissions found removed from role successfully!",
+        msg: "Valid permissions removed from role",
       });
       return;
     } catch (error) {

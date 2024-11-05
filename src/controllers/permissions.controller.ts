@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type { Repository } from "typeorm";
 
 import { Permissions } from "../entities/Permissions";
 import { AppDataSource } from "../database";
-import { type Repository } from "typeorm";
 import {
   CreatePermissionDto,
   UpdatePermissionDto,
@@ -17,6 +17,7 @@ export class PermissionController {
     this.#permissionsRepo = getRepo(Permissions);
   }
 
+  /** Gets all permissions */
   read = async (req: Request, res: Response) => {
     try {
       const permissions = await this.#permissionsRepo.find();
@@ -30,6 +31,7 @@ export class PermissionController {
     }
   };
 
+  /** Gets permission identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
     const permissionID = parseInt(req.params.id);
 
@@ -40,6 +42,7 @@ export class PermissionController {
     res.json(permission);
   };
 
+  /** Creates new permission */
   create = async (req: Request, res: Response) => {
     try {
       const permissionData: CreatePermissionDto = req.body;
@@ -73,6 +76,7 @@ export class PermissionController {
     }
   };
 
+  /** Updates permission identified by `id` */
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const permissionID = parseInt(req.params.id);
@@ -129,6 +133,7 @@ export class PermissionController {
     }
   };
 
+  /** Deletes permission identified by `id` */
   delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const permissionID = parseInt(req.params.id);

@@ -5,7 +5,9 @@ import {
   IsOptional,
   IsNumber,
   Min,
+  IsArray,
 } from "class-validator";
+import type { Roles } from "../entities/Roles";
 
 export class CreateUserDto {
   // @IsEmail()
@@ -24,6 +26,11 @@ export class CreateUserDto {
   @IsNumber()
   @Min(0)
   age!: number;
+}
+
+export class UserRolesDto {
+  @IsArray()
+  roles!: Roles["id"][];
 }
 
 export class UpdateUserDto {

@@ -1,35 +1,52 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+import type { Repository } from "typeorm";
 
 import { Users } from "../entities/Users";
-import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
+import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { AppDataSource } from "../database";
+import { Roles } from "../entities/Roles";
 
-const getRepository = AppDataSource.getRepository.bind(AppDataSource);
+const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
 export class UserController {
-  async read(req: Request, res: Response) {
-    const users = await getRepository(Users).find();
+  #usersRepo: Repository<Users>;
+  #rolesRepo: Repository<Roles>;
 
-    res.json(users);
+  constructor() {
+    this.#usersRepo = getRepo(Users);
+    this.#rolesRepo = getRepo(Roles);
   }
 
-  async readOne(req: Request<{ id: string }>, res: Response) {
+  /** Gets all users */
+  read = async (req: Request, res: Response) => {
+    try {
+      const users = await this.#usersRepo.find();
+
+      res.json(users);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ status: "failed", msg: "Listing users failed!" });
+    }
+  };
+
+  /** Gets user identified by `id` */
+  readOne = async (req: Request<{ id: string }>, res: Response) => {
     const userID = parseInt(req.params.id);
 
-    const user = await getRepository(Users).findOneBy({
+    const user = await this.#usersRepo.findOneBy({
       id: userID,
     });
 
     res.json(user);
-  }
+  };
 
-  async create(req: Request, res: Response) {
+  /** Creates new user */
+  create = async (req: Request, res: Response) => {
     try {
-      const userRepository = getRepository(Users);
       const userData: CreateUserDto = req.body;
 
-      const user = userRepository.create(userData);
-      await userRepository.save(user);
+      const user = this.#usersRepo.create(userData);
+      await this.#usersRepo.save(user);
 
       res.status(201).json({
         status: "success",
@@ -38,16 +55,16 @@ export class UserController {
     } catch (error) {
       console.log(error);
       res.status(500).json({
-        status: "error",
+        status: "failed",
         msg: "Error creating user",
       });
     }
-  }
+  };
 
-  async update(req: Request<{ id: string }>, res: Response) {
+  /** Updates user identified by `id` */
+  update = async (req: Request<{ id: string }>, res: Response) => {
     try {
-      const userRepository = getRepository(Users);
-      const userId = parseInt(req.params.id);
+      const userID = parseInt(req.params.id);
 
       const validUpdateKeys = ["firstName", "lastName", "age"];
       const updateData = req.body;
@@ -61,8 +78,8 @@ export class UserController {
         return;
       }
 
-      await userRepository.update(userId, validUpdateData);
-      const updatedUser = await userRepository.findOneBy({ id: userId });
+      await this.#usersRepo.update(userID, validUpdateData);
+      const updatedUser = await this.#usersRepo.findOneBy({ id: userID });
 
       res.status(200).json({
         status: "success",
@@ -72,18 +89,18 @@ export class UserController {
     } catch (error) {
       console.log(error);
       res.status(500).json({
-        status: "error",
+        status: "failed",
         msg: "Error updating user",
       });
     }
-  }
+  };
 
-  async delete(req: Request<{ id: string }>, res: Response) {
+  /** Deletes user identified by `id` */
+  delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID = parseInt(req.params.id);
-      const userRepository = getRepository(Users);
 
-      await userRepository.delete(userID);
+      await this.#usersRepo.delete(userID);
 
       res.json({
         status: "success",
@@ -92,9 +109,121 @@ export class UserController {
     } catch (error) {
       console.log(error);
       res.status(500).json({
-        status: "error",
+        status: "failed",
         msg: "Error Deleting user",
       });
     }
-  }
+  };
+
+  /* PERMISSIONS */
+  /** Gets roles assigned to a user identified by `id` */
+  listRoles = async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      const userID: number = parseInt(req.params.id);
+
+      const userWithRoles = await this.#usersRepo.findOne({
+        where: { id: userID },
+        relations: ["roles"],
+      });
+
+      res.json(userWithRoles);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        status: "failed",
+        msg: "Error trying to list user roles",
+      });
+    }
+  };
+
+  /** Sets role(s) on a user identified by `id` */
+  addRoles = async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      const userID: number = parseInt(req.params.id);
+      const incomingUpdate: UserRolesDto = req.body;
+      const roleIDs = incomingUpdate.roles;
+
+      const userWithRoles = await this.#usersRepo.findOne({
+        where: { id: userID },
+        relations: ["roles"],
+      });
+      if (!userWithRoles) {
+        res.status(404).json({
+          status: "failed",
+          msg: "User not found",
+        });
+        return;
+      }
+
+      const existingroles = userWithRoles.roles;
+      const newRoles = await Promise.all(
+        roleIDs.map(async (roleID) => {
+          const role = await this.#rolesRepo.findOne({
+            where: { id: roleID },
+          });
+
+          return role;
+        })
+      ).then(function (roles) {
+        return roles.filter((role) => role !== null);
+      });
+
+      // Update roles
+      userWithRoles.roles = [...existingroles, ...newRoles];
+
+      await this.#usersRepo.save(userWithRoles);
+
+      res.status(200).json({
+        status: "success",
+        msg: "Valid roles added to user",
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: "failed", msg: "Updating user roles failed" });
+    }
+  };
+
+  /** Drops role(s) on a user identified by `id` */
+  dropPermission = async (req: Request<{ id: string }>, res: Response) => {
+    try {
+      const userID: number = parseInt(req.params.id);
+      const incomingRolesRemoval: UserRolesDto = req.body;
+
+      const userWithRoles = await this.#usersRepo.findOne({
+        where: { id: userID },
+        relations: ["roles"],
+      });
+
+      if (!userWithRoles) {
+        res.status(404).json({ status: "failed", msg: "User not found" });
+        return;
+      }
+
+      const filteredRoles = [];
+      const existingRoles = userWithRoles.roles;
+      const removalPermissionIDs = incomingRolesRemoval.roles;
+      for (let idx = 0; idx < existingRoles.length; idx++) {
+        const id = existingRoles[idx].id;
+
+        if (!removalPermissionIDs.includes(id)) {
+          filteredRoles.push(existingRoles[idx]);
+        }
+      }
+
+      userWithRoles.roles = filteredRoles;
+      await this.#usersRepo.save(userWithRoles);
+
+      res.status(200).json({
+        status: "success",
+        msg: "Valid roles removed from user",
+      });
+      return;
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: "failed", msg: "Removing roles failed!" });
+      return;
+    }
+  };
 }
