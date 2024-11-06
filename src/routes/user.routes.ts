@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { UserController } from "../controllers/user.controller";
-import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
+import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { validationMiddleware } from "../middleware/validation.middleware";
 
 const router = Router();
@@ -26,5 +26,17 @@ router.patch(
 // Delete a user
 router.delete("/:id", userController.delete);
 
-export default router;
+// ROLES
+router.get("/:id/roles", userController.listRoles);
+router.patch(
+  "/:id/roles/add",
+  validationMiddleware(UserRolesDto),
+  userController.addRoles
+);
+router.patch(
+  "/:id/roles/remove",
+  validationMiddleware(UserRolesDto),
+  userController.dropRoles
+);
 
+export default router;

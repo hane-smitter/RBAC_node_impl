@@ -121,7 +121,7 @@ export class UserController {
     try {
       const userID: number = parseInt(req.params.id);
 
-      const userWithRoles = await this.#usersRepo.findOne({
+      const userWithRoles = await this.#usersRepo.find({
         where: { id: userID },
         relations: ["roles"],
       });
@@ -185,7 +185,7 @@ export class UserController {
   };
 
   /** Drops role(s) on a user identified by `id` */
-  dropPermission = async (req: Request<{ id: string }>, res: Response) => {
+  dropRoles = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID: number = parseInt(req.params.id);
       const incomingRolesRemoval: UserRolesDto = req.body;

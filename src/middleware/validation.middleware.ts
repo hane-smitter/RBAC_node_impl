@@ -20,7 +20,7 @@ export function validationMiddleware<T extends object>(
         [error.property]: Object.values(error.constraints || {}),
       }));
       res.status(400).json({
-        status: "error",
+        status: "failed",
         message: "Validation failed",
         errors: formattedErrors,
       });
