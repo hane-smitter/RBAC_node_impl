@@ -3,12 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
-  Unique,
 } from "typeorm";
 import { Roles } from "./Roles";
 
 @Entity()
-@Unique(["name"])
 export class Permissions {
   @PrimaryGeneratedColumn()
   id!: number;

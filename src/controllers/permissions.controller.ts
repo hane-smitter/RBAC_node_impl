@@ -59,6 +59,7 @@ export class PermissionController {
         return;
       }
 
+      permissionData.name = permissionData.name.toUpperCase();
       const role = this.#permissionsRepo.create(permissionData);
       await this.#permissionsRepo.save(role);
 
@@ -111,6 +112,8 @@ export class PermissionController {
           });
           return;
         }
+
+        validUpdateData.name = validUpdateData.name.toUpperCase();
       }
 
       const { affected } = await this.#permissionsRepo.update(

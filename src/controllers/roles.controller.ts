@@ -70,6 +70,7 @@ export class RoleController {
         return;
       }
 
+      roleData.name = roleData.name.toUpperCase();
       const role = this.#rolesRepo.create(roleData);
       await this.#rolesRepo.save(role);
 
@@ -107,6 +108,10 @@ export class RoleController {
           )}`,
         });
         return;
+      }
+
+      if (validUpdateData.name) {
+        validUpdateData.name = validUpdateData.name.toUpperCase();
       }
 
       await this.#rolesRepo.update(roleID, validUpdateData);

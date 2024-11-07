@@ -3,7 +3,7 @@ import "reflect-metadata";
 import express from "express";
 
 import { AppDataSource } from "./database";
-import { CreatePermissionsTrigger1729947215244 } from "./migrations/1729947215244-CreatePermissionsTrigger";
+import { CreatePermissionsTrigger1729947215244 } from "./migrations/apprun/1729947215244-CreatePermissionsTrigger";
 import userRoutes from "./routes/user.routes";
 import roleRoutes from "./routes/role.routes";
 import permissionRoutes from "./routes/permission.routes";
