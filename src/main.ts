@@ -15,7 +15,7 @@ const apiRouter = express.Router();
 app.use(express.json());
 
 // Server port number
-const PORT = parseInt(String(process.env.sever_port)) || 3000;
+const PORT = parseInt(String(process.env.SERVER_PORT)) || 3000;
 
 // Application Routes
 app.get("/", (req, res) => {
@@ -29,7 +29,7 @@ app.use("/api/v1", apiRouter);
 
 // Catch-all route for 404
 app.use((req, res) => {
-  res.status(404).json({ err: "404 Not Found" });
+  res.status(404).json({ status: "failed", msg: "404 Not Found" });
 });
 
 // Connect to DB

@@ -78,10 +78,10 @@ export class CustomDataSource extends DataSource {
 }
 
 const mySqldbConfigs: MySqlDbConfig = {
-  username: process.env.db_user,
-  password: process.env.db_pass,
-  host: process.env.db_host,
-  port: parseInt(process.env.db_port as string),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT as string),
   database: "RBAC_impl",
 };
 

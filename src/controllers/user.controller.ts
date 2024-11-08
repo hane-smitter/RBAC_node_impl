@@ -121,7 +121,7 @@ export class UserController {
     try {
       const userID: number = parseInt(req.params.id);
 
-      const userWithRoles = await this.#usersRepo.find({
+      const userWithRoles = await this.#usersRepo.findOne({
         where: { id: userID },
         relations: ["roles"],
       });
