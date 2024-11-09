@@ -1,4 +1,3 @@
-// src/database/seeders/UserSeeder.ts
 import { type DataSource } from "typeorm";
 import { Users } from "../../entities/Users";
 

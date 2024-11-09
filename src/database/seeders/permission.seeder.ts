@@ -1,5 +1,6 @@
-// src/database/seeders/UserSeeder.ts
 import { type DataSource } from "typeorm";
+
+import { PERMISSIONS as P } from "./constants";
 import { Permissions } from "../../entities/Permissions";
 
 export const seedPermissions = async (dataSource: DataSource) => {
@@ -8,61 +9,61 @@ export const seedPermissions = async (dataSource: DataSource) => {
   const permissions = [
     // users
     {
-      name: "USER:READ",
+      name: P.User_READ,
       description: "Can read user(s)",
     },
     {
-      name: "USER:ADD",
+      name: P.User_ADD,
       description: "Can add a new user",
     },
     {
-      name: "USER:EDIT",
+      name: P.User_EDIT,
       description: "Can edit user information",
     },
     {
-      name: "USER_ROLE:EDIT",
+      name: P.UserRole_EDIT,
       description: "Can edit user information and their roles",
     },
     {
-      name: "USER:REMOVE",
+      name: P.User_REMOVE,
       description: "Can remove user",
     },
     // roles
     {
-      name: "ROLE:READ",
+      name: P.Role_READ,
       description: "Can read role(s)",
     },
     {
-      name: "ROLE:ADD",
+      name: P.Role_ADD,
       description: "Can add a new role",
     },
     {
-      name: "ROLE:EDIT",
+      name: P.Role_EDIT,
       description: "Can edit role information",
     },
     {
-      name: "ROLE_PERMISSION:EDIT",
+      name: P.RolePermission_EDIT,
       description: "Can edit role information and its permissions",
     },
     {
-      name: "ROLE:REMOVE",
+      name: P.Role_REMOVE,
       description: "Can remove role",
     },
     // permissions
     {
-      name: "PERMISSION:READ",
+      name: P.Permission_READ,
       description: "Can read permission(s)",
     },
     {
-      name: "PERMISSION:ADD",
+      name: P.Permission_ADD,
       description: "Can add a new permission",
     },
     {
-      name: "PERMISSION:EDIT",
+      name: P.Permission_EDIT,
       description: "Can edit permission information",
     },
     {
-      name: "PERMISSION:REMOVE",
+      name: P.Permission_REMOVE,
       description: "Can remove permission",
     },
   ];
