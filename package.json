@@ -5,9 +5,11 @@
   "main": "dist/main.js",
   "scripts": {
     "start": "node dist/main.js",
-    "predev": "rimraf dist",
     "dev": "nodemon",
+    "prebuild": "rimraf dist",
     "build": "tsc",
+    "preseed": "npm run build",
+    "seed": "node dist/database/seeders/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

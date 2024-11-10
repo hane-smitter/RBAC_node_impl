@@ -68,15 +68,10 @@ export const seedPermissions = async (dataSource: DataSource) => {
     },
   ];
 
-  //   for (const user of permissions) {
-  //     const newUser = permissionRepository.create(user);
-  //     await permissionRepository.save(newUser);
-  //   }
-  await Promise.all(
-    permissions.map(async (permission) => {
-      const newPermission = permissionRepository.create(permission);
-      await permissionRepository.save(newPermission);
-    })
-  );
+  // We ensure we save to the DB sequentially to avoid conflict with how trigger on this table works
+  for (const permission of permissions) {
+    const newPermission = permissionRepository.create(permission);
+    await permissionRepository.save(newPermission);
+  }
   console.log("Permissions seeded successfully.");
 };
