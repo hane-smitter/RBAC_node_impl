@@ -1,6 +1,6 @@
 import { type DataSource } from "typeorm";
 
-import { ROLES as R, PERMISSIONS as P } from "./constants";
+import { ROLES as R, PERMISSIONS as P } from "../../constants";
 import { Roles } from "../../entities/Roles";
 import { Permissions } from "../../entities/Permissions";
 

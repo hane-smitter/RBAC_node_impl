@@ -15,7 +15,7 @@ export class CreatePermissionsTrigger1729947215244
         -- Find the current largest power of 2 in the column
         SELECT COALESCE(MAX(serial_id), 0) INTO max_value FROM permissions;
         
-        -- Check if max_value is 1 (initial insert)
+        -- Check if max_value is 0 (starting point)
         IF max_value = 0 THEN
           SET NEW.serial_id = 1;
         ELSE

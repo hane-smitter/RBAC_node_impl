@@ -1,6 +1,6 @@
 import { type DataSource } from "typeorm";
 
-import { PERMISSIONS as P } from "./constants";
+import { PERMISSIONS as P } from "../../constants";
 import { Permissions } from "../../entities/Permissions";
 
 export const seedPermissions = async (dataSource: DataSource) => {

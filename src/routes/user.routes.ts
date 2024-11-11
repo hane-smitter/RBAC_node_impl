@@ -3,12 +3,14 @@ import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
 import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { validationMiddleware } from "../middleware/validation.middleware";
+import { requirePermission } from "../middleware/requirePermission.middleware";
+import { PERMISSIONS as P } from "../constants";
 
 const router = Router();
 const userController = new UserController();
 
 // Get all users
-router.get("/", userController.read);
+router.get("/", requirePermission([P.User_READ, P.User_ADD]), userController.read);
 
 // Get a user by id
 router.get("/:id", userController.readOne);

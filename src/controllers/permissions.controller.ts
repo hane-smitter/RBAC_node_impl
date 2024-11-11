@@ -7,6 +7,7 @@ import {
   CreatePermissionDto,
   UpdatePermissionDto,
 } from "../dtos/permission.dto";
+import { PermissionProvider } from "../providers/permission.provider";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
@@ -68,12 +69,16 @@ export class PermissionController {
         msg: "Permission created!",
         data: role,
       });
+      // Clear cache that stores fetched permissions from DB
+      PermissionProvider.clearCache();
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({
         status: "failed",
         msg: "Error creating Permission",
       });
+      return;
     }
   };
 
@@ -125,6 +130,8 @@ export class PermissionController {
         status: "success",
         msg: `${affected} Permission updated`,
       });
+      // Clear cache that stores fetched permissions from DB
+      PermissionProvider.clearCache();
       return;
     } catch (error) {
       console.log(error);
@@ -147,12 +154,16 @@ export class PermissionController {
         status: "success",
         msg: `${affected} Permission deleted`,
       });
+      // Clear cache that stores fetched permissions from DB
+      PermissionProvider.clearCache();
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).json({
         status: "failed",
         msg: "Error deleting permission",
       });
+      return;
     }
   };
 }

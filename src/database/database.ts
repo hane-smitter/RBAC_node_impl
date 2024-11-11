@@ -94,6 +94,6 @@ export const AppDataSource = new CustomDataSource({
   database: mySqldbConfigs.database,
   entities: ["dist/entities/**/*.js"],
   synchronize: process.env.NODE_ENV !== "production",
-  logging: true,
+  // logging: true,
   migrations: ["dist/migrations/*.js"],
 });

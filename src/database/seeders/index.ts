@@ -1,4 +1,3 @@
-// import dotenv from "dotenv";
 import "dotenv/config";
 
 import { AppDataSource } from "../database";
@@ -8,7 +7,6 @@ import { seedUsers } from "./user.seeder";
 import { CreatePermissionsTrigger1729947215244 } from "../../migrations/apprun/1729947215244-CreatePermissionsTrigger";
 
 const runSeeders = async () => {
-  console.log("Database seeding STARTED...");
   await AppDataSource.initialize()
     .then(async () => {
       // Run migration file - To add MySQL trigger
@@ -17,14 +15,15 @@ const runSeeders = async () => {
       await tblPermissionsAutoSerialId.down(AppDataSource.createQueryRunner());
       await tblPermissionsAutoSerialId.up(AppDataSource.createQueryRunner());
 
-      console.log("Database connected and Initialized.");
+      console.log("Database connection established.");
     })
     .catch((error) => {
       console.log(error);
     });
 
-  console.log("Running seeders...");
+  console.log("Database seeding STARTED...");
 
+  // Order is important
   await seedPermissions(AppDataSource);
   await seedRoles(AppDataSource);
   await seedUsers(AppDataSource);

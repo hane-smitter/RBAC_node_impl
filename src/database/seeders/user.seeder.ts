@@ -2,7 +2,7 @@ import { type DataSource } from "typeorm";
 
 import { Users } from "../../entities/Users";
 import { Roles } from "../../entities/Roles";
-import { ROLES as R } from "./constants";
+import { ROLES as R } from "../../constants";
 
 export const seedUsers = async (dataSource: DataSource) => {
   const userRepository = dataSource.getRepository(Users);
