@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { RoleController } from "../controllers/roles.controller";
+import { RoleController } from "../controllers/role.controller";
 import {
   CreateRoleDto,
   RolePermissionsDto,
@@ -9,38 +9,38 @@ import {
 import { validationMiddleware } from "../middleware/validation.middleware";
 
 const router = Router();
-const rolesController = new RoleController();
+const roleController = new RoleController();
 
 // Get all roles
-router.get("/", rolesController.read);
+router.get("/", roleController.read);
 
 // Get a role by id
-router.get("/:id", rolesController.readOne);
+router.get("/:id", roleController.readOne);
 
 // Create a new role
-router.post("/", validationMiddleware(CreateRoleDto), rolesController.create);
+router.post("/", validationMiddleware(CreateRoleDto), roleController.create);
 
 // Update a role
 router.patch(
   "/:id",
   validationMiddleware(UpdateRoleDto),
-  rolesController.update
+  roleController.update
 );
 
 // Delete a role
-router.delete("/:id", rolesController.delete);
+router.delete("/:id", roleController.delete);
 
 // PERMISSIONS
-router.get("/:id/permissions", rolesController.listPermission);
+router.get("/:id/permissions", roleController.listPermission);
 router.patch(
   "/:id/permissions/add",
   validationMiddleware(RolePermissionsDto),
-  rolesController.addPermission
+  roleController.addPermission
 );
 router.patch(
   "/:id/permissions/remove",
   validationMiddleware(RolePermissionsDto),
-  rolesController.dropPermission
+  roleController.dropPermission
 );
 
 export default router;

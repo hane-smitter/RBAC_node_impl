@@ -1,12 +1,12 @@
 import { type DataSource } from "typeorm";
 
-import { Users } from "../../entities/Users";
-import { Roles } from "../../entities/Roles";
+import { User } from "../../entities/User";
+import { Role } from "../../entities/Role";
 import { ROLES as R } from "../../constants";
 
 export const seedUsers = async (dataSource: DataSource) => {
-  const userRepository = dataSource.getRepository(Users);
-  const roleRepository = dataSource.getRepository(Roles);
+  const userRepository = dataSource.getRepository(User);
+  const roleRepository = dataSource.getRepository(Role);
 
   const users = [
     // Super Admin

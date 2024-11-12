@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import type { Repository } from "typeorm";
 
-import { Permissions } from "../entities/Permissions";
+import { Permission } from "../entities/Permission";
 import { AppDataSource } from "../database";
 import {
   CreatePermissionDto,
@@ -12,10 +12,10 @@ import { PermissionProvider } from "../providers/permission.provider";
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
 export class PermissionController {
-  #permissionsRepo: Repository<Permissions>;
+  #permissionsRepo: Repository<Permission>;
 
   constructor() {
-    this.#permissionsRepo = getRepo(Permissions);
+    this.#permissionsRepo = getRepo(Permission);
   }
 
   /** Gets all permissions */

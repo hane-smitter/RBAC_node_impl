@@ -5,10 +5,10 @@ import {
   ManyToMany,
   JoinTable,
 } from "typeorm";
-import { Roles } from "./Roles";
+import { Role } from "./Role";
 
-@Entity()
-export class Users {
+@Entity({ name: "users" })
+export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -24,7 +24,7 @@ export class Users {
   // @Column()
   // email!: number;
 
-  @ManyToMany(() => Roles, (roles) => roles.users, { cascade: true })
+  @ManyToMany(() => Role, (role) => role.users, { onDelete: "CASCADE" })
   @JoinTable({ name: "users_roles" })
-  roles!: Roles[];
+  roles!: Role[];
 }

@@ -1,24 +1,24 @@
 import type { Request, Response } from "express";
 import type { Repository } from "typeorm";
 
-import { Roles } from "../entities/Roles";
+import { Role } from "../entities/Role";
 import {
   CreateRoleDto,
   RolePermissionsDto,
   UpdateRoleDto,
 } from "../dtos/role.dto";
 import { AppDataSource } from "../database";
-import { Permissions } from "../entities/Permissions";
+import { Permission } from "../entities/Permission";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
 export class RoleController {
-  #rolesRepo: Repository<Roles>;
-  #permissionsRepo: Repository<Permissions>;
+  #rolesRepo: Repository<Role>;
+  #permissionsRepo: Repository<Permission>;
 
   constructor() {
-    this.#rolesRepo = getRepo(Roles);
-    this.#permissionsRepo = getRepo(Permissions);
+    this.#rolesRepo = getRepo(Role);
+    this.#permissionsRepo = getRepo(Permission);
   }
 
   /** Gets all roles */

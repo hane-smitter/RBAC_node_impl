@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction, RequestHandler } from "express";
 import type { Repository } from "typeorm";
 
 import { AppDataSource } from "../database";
-import { Users } from "../entities/Users";
+import { User } from "../entities/User";
 import { PermissionProvider } from "../providers/permission.provider";
 
 /**
@@ -11,7 +11,7 @@ import { PermissionProvider } from "../providers/permission.provider";
 export const requirePermission = (
   resourcePermissionNames: string[]
 ): RequestHandler => {
-  const userRepo = AppDataSource.getRepository(Users);
+  const userRepo = AppDataSource.getRepository(User);
   return async function (
     req: Request,
     res: Response,
@@ -81,7 +81,7 @@ export const requirePermission = (
  * ```
  */
 async function getUserPermissions(
-  userRepo: Repository<Users>,
+  userRepo: Repository<User>,
   userID: number
 ): Promise<number> {
   const result = await userRepo

@@ -1,10 +1,10 @@
 import { AppDataSource } from "../database";
-import { Permissions } from "../entities/Permissions";
+import { Permission } from "../entities/Permission";
 
 export class PermissionProvider {
-  static #permissionRepo = AppDataSource.getRepository(Permissions);
+  static #permissionRepo = AppDataSource.getRepository(Permission);
   // We create a cache since we do not expect it to change frequently
-  static #cache: { permissions?: Permissions[] } = {};
+  static #cache: { permissions?: Permission[] } = {};
   static #instance: any = null;
 
   // Make constructor private

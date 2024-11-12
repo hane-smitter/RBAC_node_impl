@@ -6,11 +6,11 @@ import {
   JoinTable,
   Unique,
 } from "typeorm";
-import { Users } from "./Users";
-import { Permissions } from "./Permissions";
+import { User } from "./User";
+import { Permission } from "./Permission";
 
-@Entity()
-export class Roles {
+@Entity({ name: "roles" })
+export class Role {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -20,12 +20,12 @@ export class Roles {
   @Column({ type: "text" })
   description!: string;
 
-  @ManyToMany(() => Users, (users) => users.roles)
-  users!: Users[];
+  @ManyToMany(() => User, (user) => user.roles)
+  users!: User[];
 
-  @ManyToMany(() => Permissions, (permissions) => permissions.roles, {
+  @ManyToMany(() => Permission, (permission) => permission.roles, {
     onDelete: "CASCADE",
   })
   @JoinTable({ name: "roles_permissions" })
-  permissions!: Permissions[];
+  permissions!: Permission[];
 }

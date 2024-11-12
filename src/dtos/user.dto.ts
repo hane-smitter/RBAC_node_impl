@@ -7,7 +7,7 @@ import {
   Min,
   IsArray,
 } from "class-validator";
-import type { Roles } from "../entities/Roles";
+import type { Role } from "../entities/Role";
 
 export class CreateUserDto {
   // @IsEmail()
@@ -30,7 +30,7 @@ export class CreateUserDto {
 
 export class UserRolesDto {
   @IsArray()
-  roles!: Roles["id"][];
+  roles!: Role["id"][];
 }
 
 export class UpdateUserDto {

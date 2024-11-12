@@ -1,13 +1,8 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-} from "typeorm";
-import { Roles } from "./Roles";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Role } from "./Role";
 
-@Entity()
-export class Permissions {
+@Entity({ name: "permissions" })
+export class Permission {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -22,8 +17,8 @@ export class Permissions {
   @Column({ type: "text" })
   description!: string;
 
-  @ManyToMany(() => Roles, (roles) => roles.permissions, {
+  @ManyToMany(() => Role, (roles) => roles.permissions, {
     onDelete: "CASCADE",
   })
-  roles!: Roles[];
+  roles!: Role[];
 }

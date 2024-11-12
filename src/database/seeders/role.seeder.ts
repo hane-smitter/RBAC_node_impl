@@ -1,12 +1,12 @@
 import { type DataSource } from "typeorm";
 
 import { ROLES as R, PERMISSIONS as P } from "../../constants";
-import { Roles } from "../../entities/Roles";
-import { Permissions } from "../../entities/Permissions";
+import { Role } from "../../entities/Role";
+import { Permission } from "../../entities/Permission";
 
 export const seedRoles = async (dataSource: DataSource) => {
-  const rolesRepository = dataSource.getRepository(Roles);
-  const permissionsRepository = dataSource.getRepository(Permissions);
+  const rolesRepository = dataSource.getRepository(Role);
+  const permissionsRepository = dataSource.getRepository(Permission);
 
   const roles = [
     {

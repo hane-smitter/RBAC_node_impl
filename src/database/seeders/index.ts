@@ -15,7 +15,7 @@ const runSeeders = async () => {
       await tblPermissionsAutoSerialId.down(AppDataSource.createQueryRunner());
       await tblPermissionsAutoSerialId.up(AppDataSource.createQueryRunner());
 
-      console.log("Database connection established.");
+      console.log("(⊙ ‿ ⊙ )  DATABASE CONNECTION ESTABLISHED.");
     })
     .catch((error) => {
       console.log(error);
@@ -30,7 +30,9 @@ const runSeeders = async () => {
 
   console.log("Database seeding COMPLETE.");
 
-  await AppDataSource.destroy();
+  await AppDataSource.destroy().then(() => {
+    console.log("(─ ‿ ─)  DATABASE CONNECTION CLOSED.");
+  });
 };
 
 runSeeders().catch((error) => {

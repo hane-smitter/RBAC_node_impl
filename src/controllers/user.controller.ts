@@ -1,20 +1,20 @@
 import type { Request, Response } from "express";
 import type { Repository } from "typeorm";
 
-import { Users } from "../entities/Users";
+import { User } from "../entities/User";
 import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { AppDataSource } from "../database";
-import { Roles } from "../entities/Roles";
+import { Role } from "../entities/Role";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
 export class UserController {
-  #usersRepo: Repository<Users>;
-  #rolesRepo: Repository<Roles>;
+  #usersRepo: Repository<User>;
+  #rolesRepo: Repository<Role>;
 
   constructor() {
-    this.#usersRepo = getRepo(Users);
-    this.#rolesRepo = getRepo(Roles);
+    this.#usersRepo = getRepo(User);
+    this.#rolesRepo = getRepo(Role);
   }
 
   /** Gets all users */

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { PermissionController } from "../controllers/permissions.controller";
+import { PermissionController } from "../controllers/permission.controller";
 import {
   CreatePermissionDto,
   UpdatePermissionDto,
@@ -8,29 +8,29 @@ import {
 import { validationMiddleware } from "../middleware/validation.middleware";
 
 const router = Router();
-const permissionsController = new PermissionController();
+const permissionController = new PermissionController();
 
 // Get all permissions
-router.get("/", permissionsController.read);
+router.get("/", permissionController.read);
 
 // Get a permission by id
-router.get("/:id", permissionsController.readOne);
+router.get("/:id", permissionController.readOne);
 
 // Create a new permission
 router.post(
   "/",
   validationMiddleware(CreatePermissionDto),
-  permissionsController.create
+  permissionController.create
 );
 
 // Update a permission
 router.patch(
   "/:id",
   validationMiddleware(UpdatePermissionDto),
-  permissionsController.update
+  permissionController.update
 );
 
 // Delete a permission
-router.delete("/:id", permissionsController.delete);
+router.delete("/:id", permissionController.delete);
 
 export default router;
