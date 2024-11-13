@@ -39,23 +39,24 @@ export const requirePermission = (
     // Required permissions to access the `next()` resource as an aggregate number
     const resourcePermissions = resourcePermissionInstances.reduce(
       (previousValue, currentValue) => {
-        return previousValue | currentValue.serial_id; // Doing a bitwise OR with permission's `serial_id`
+        return previousValue | currentValue.serial_id; // Doing a bitwise OR using permission's `serial_id`
       },
       0
     );
 
     const userID = parseInt(incomingUserID);
-    // Below is a DB operation to get user permission as an aggregate number. User's permission could be stored on JWT token to eliminate DB call
+    // DB operation to get user permission as an aggregate number.
+    // In secure systems(with auth), this permission number could be stored on JWT token to eliminate DB call
     const userPermissions = await getUserPermissions(userRepo, userID);
     const hasRequiredPermissions =
       (resourcePermissions & userPermissions) === resourcePermissions;
 
-    console.log("Permission BIT_AND -> ", {
-      userPermissions,
-      resourcePermissions,
-      resourcePermissionNames,
-      hasRequiredPermissions,
-    });
+    // console.log("Permission BIT_AND -> ", {
+    //   userPermissions,
+    //   resourcePermissions,
+    //   resourcePermissionNames,
+    //   hasRequiredPermissions,
+    // });
 
     if (!hasRequiredPermissions) {
       res.status(403).json({

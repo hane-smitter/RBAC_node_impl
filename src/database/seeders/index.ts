@@ -1,4 +1,5 @@
 import "dotenv/config";
+import chalk from "chalk";
 
 import { AppDataSource } from "../database";
 import { seedPermissions } from "./permission.seeder";
@@ -15,23 +16,27 @@ const runSeeders = async () => {
       await tblPermissionsAutoSerialId.down(AppDataSource.createQueryRunner());
       await tblPermissionsAutoSerialId.up(AppDataSource.createQueryRunner());
 
-      console.log("(⊙ ‿ ⊙ )  DATABASE CONNECTION ESTABLISHED.");
+      console.log(
+        chalk.dim("(⊙ ‿ ⊙) ") + chalk.blue("DATABASE CONNECTION ESTABLISHED.")
+      );
     })
     .catch((error) => {
       console.log(error);
     });
 
-  console.log("Database seeding STARTED...");
+  console.log(chalk.magenta("Database seeding STARTED..."));
 
   // Order is important
   await seedPermissions(AppDataSource);
   await seedRoles(AppDataSource);
   await seedUsers(AppDataSource);
 
-  console.log("Database seeding COMPLETE.");
+  console.log(chalk.magenta("Database seeding COMPLETE."));
 
   await AppDataSource.destroy().then(() => {
-    console.log("(─ ‿ ─)  DATABASE CONNECTION CLOSED.");
+    console.log(
+      chalk.dim("(─ ‿ ─) ") + chalk.blue("DATABASE CONNECTION CLOSED.")
+    );
   });
 };
 
