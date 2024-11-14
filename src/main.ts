@@ -7,12 +7,14 @@ import { CreatePermissionsTrigger1729947215244 } from "./migrations/apprun/17299
 import userRoutes from "./routes/user.routes";
 import roleRoutes from "./routes/role.routes";
 import permissionRoutes from "./routes/permission.routes";
+import responseStructure from "./middlewares/responseStructure.middleware";
 
 const app = express();
 const apiRouter = express.Router();
 
 // Main middlewares
 app.use(express.json());
+app.use(responseStructure);
 
 // Server port number
 const PORT = parseInt(String(process.env.SERVER_PORT)) || 3000;

@@ -6,7 +6,7 @@ import {
   RolePermissionsDto,
   UpdateRoleDto,
 } from "../dtos/role.dto";
-import { validationMiddleware } from "../middleware/validation.middleware";
+import { validationMiddleware } from "../middlewares/validation.middleware";
 
 const router = Router();
 const roleController = new RoleController();

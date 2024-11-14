@@ -5,7 +5,7 @@ import {
   CreatePermissionDto,
   UpdatePermissionDto,
 } from "../dtos/permission.dto";
-import { validationMiddleware } from "../middleware/validation.middleware";
+import { validationMiddleware } from "../middlewares/validation.middleware";
 
 const router = Router();
 const permissionController = new PermissionController();

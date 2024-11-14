@@ -22,7 +22,7 @@ export class UserController {
     try {
       const users = await this.#usersRepo.find();
 
-      res.json(users);
+      res.status(202).respond(users);
     } catch (error) {
       console.log(error);
       res.status(500).json({ status: "failed", msg: "Listing users failed!" });
@@ -220,9 +220,7 @@ export class UserController {
       });
       return;
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "failed", msg: "Removing roles failed!" });
+      res.status(500).json({ status: "failed", msg: "Removing roles failed!" });
       return;
     }
   };

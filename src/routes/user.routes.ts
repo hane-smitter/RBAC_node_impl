@@ -2,8 +2,8 @@ import { Router } from "express";
 
 import { UserController } from "../controllers/user.controller";
 import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
-import { validationMiddleware } from "../middleware/validation.middleware";
-import { requirePermission } from "../middleware/requirePermission.middleware";
+import { validationMiddleware } from "../middlewares/validation.middleware";
+import { requirePermission } from "../middlewares/requirePermission.middleware";
 import { PERMISSIONS as P } from "../constants";
 
 const router = Router();
