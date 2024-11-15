@@ -21,22 +21,19 @@ export const requirePermission = (
     const incomingUserID = req.headers["x-user-id"] as string;
 
     if (!incomingUserID) {
-      res.status(401).json({
-        status: "failed",
-        msg: "Account required to access resource",
-      });
+      res.status(401).respond("Account required to access resource");
       return;
     }
 
     const appPermissions = await PermissionProvider.retrievePermissions();
     if (!appPermissions.length) {
-      res.status(403).json({ status: "failed", msg: "No permissions" });
+      res.status(500).respond("No permissions");
       return;
     }
     const resourcePermissionInstances = appPermissions.filter((appPermission) =>
       resourcePermissionNames.includes(appPermission.name)
     );
-    // Required permissions to access the `next()` resource as an aggregate number
+    // Reduce `resourcePermissionInstances`(instances of `Permission` entity) to a whole number representing all permissions as an aggregate
     const resourcePermissions = resourcePermissionInstances.reduce(
       (previousValue, currentValue) => {
         return previousValue | currentValue.serial_id; // Doing a bitwise OR using permission's `serial_id`
@@ -46,23 +43,13 @@ export const requirePermission = (
 
     const userID = parseInt(incomingUserID);
     // DB operation to get user permission as an aggregate number.
-    // In secure systems(with auth), this permission number could be stored on JWT token to eliminate DB call
+    // In secure systems(with auth), this permission number could be embedded on JWT token; so we can extract it for use here. DB call would be unnecessary
     const userPermissions = await getUserPermissions(userRepo, userID);
     const hasRequiredPermissions =
       (resourcePermissions & userPermissions) === resourcePermissions;
 
-    // console.log("Permission BIT_AND -> ", {
-    //   userPermissions,
-    //   resourcePermissions,
-    //   resourcePermissionNames,
-    //   hasRequiredPermissions,
-    // });
-
     if (!hasRequiredPermissions) {
-      res.status(403).json({
-        status: "failed",
-        msg: "Access Denied! Insufficient permissions.",
-      });
+      res.status(403).respond("Access Denied! Insufficient permissions.");
       return;
     }
 

@@ -5,6 +5,7 @@ import { User } from "../entities/User";
 import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { AppDataSource } from "../database";
 import { Role } from "../entities/Role";
+import { CustomError } from "../utils/customError";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
@@ -22,10 +23,10 @@ export class UserController {
     try {
       const users = await this.#usersRepo.find();
 
-      res.status(202).respond(users);
+      res.status(200).respond(users);
     } catch (error) {
       console.log(error);
-      res.status(500).json({ status: "failed", msg: "Listing users failed!" });
+      res.status(500).respond("Listing users failed!");
     }
   };
 
@@ -37,7 +38,7 @@ export class UserController {
       id: userID,
     });
 
-    res.json(user);
+    res.respond(user);
   };
 
   /** Creates new user */

@@ -2,8 +2,7 @@ import "express";
 
 declare module "express-serve-static-core" {
   export interface Response {
-    // respond: (data: any, success?: boolean, statusCode?: number) => void;
-    /** Custom method to send  response in a consistent format */
+    /** Custom method that sends json HTTP response in a consistent structure */
     respond: (data: any) => void;
   }
 }
