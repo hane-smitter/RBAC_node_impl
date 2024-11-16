@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
+import { CustomError } from "../utils/customError";
 
 // Define a constructor type
 // Below type means "something that can be called with 'new' to create an instance of type T".(A Class definition type)
@@ -19,11 +20,17 @@ export function validationMiddleware<T extends object>(
         // constraints: error.constraints,
         [error.property]: Object.values(error.constraints || {}),
       }));
-      res.status(400).json({
-        status: "failed",
-        message: "Validation failed",
-        errors: formattedErrors,
-      });
+      // res.status(400).json({
+      //   status: "failed",
+      //   message: "Validation failed",
+      //   errors: formattedErrors,
+      // });
+
+      const errorResponse = new CustomError(
+        "Validation failed",
+        formattedErrors
+      );
+      res.status(400).respond(errorResponse);
       return;
     }
 

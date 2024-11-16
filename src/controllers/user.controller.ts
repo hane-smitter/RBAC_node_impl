@@ -32,13 +32,18 @@ export class UserController {
 
   /** Gets user identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
-    const userID = parseInt(req.params.id);
+    try {
+      const userID = parseInt(req.params.id);
 
-    const user = await this.#usersRepo.findOneBy({
-      id: userID,
-    });
+      const user = await this.#usersRepo.findOneBy({
+        id: userID,
+      });
 
-    res.respond(user);
+      res.respond(user);
+    } catch (error) {
+      console.log(error);
+      res.status(500).respond("Users could not be fetched!");
+    }
   };
 
   /** Creates new user */

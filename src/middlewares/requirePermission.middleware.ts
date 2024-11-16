@@ -45,6 +45,8 @@ export const requirePermission = (
     // DB operation to get user permission as an aggregate number.
     // In secure systems(with auth), this permission number could be embedded on JWT token; so we can extract it for use here. DB call would be unnecessary
     const userPermissions = await getUserPermissions(userRepo, userID);
+
+    // Checking if user has required permissions to access `next()` resource
     const hasRequiredPermissions =
       (resourcePermissions & userPermissions) === resourcePermissions;
 

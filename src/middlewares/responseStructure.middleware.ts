@@ -4,7 +4,7 @@ import { CustomError } from "../utils/customError";
 // Define the response structure type
 interface IResponseStructure {
   status: "success" | "failure";
-  data: any | null;
+  data: any;
   error: { details: any; message: string; stack?: string } | null;
 }
 
@@ -36,10 +36,6 @@ const responseStructure = (req: Request, res: Response, next: NextFunction) => {
           data.stack && { stack: data.stack }),
       };
       structuredResponse.data = null;
-
-      if (data.statusCode) {
-        responseStatus = data.statusCode;
-      }
 
       responseStatus = isErrorStatusCode(responseStatus) ? responseStatus : 500; // Set status for error
     } else if (isErrorStatusCode(responseStatus) || data instanceof Error) {

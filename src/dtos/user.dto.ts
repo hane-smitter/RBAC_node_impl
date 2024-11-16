@@ -1,7 +1,7 @@
 import {
   IsEmail,
   IsString,
-  MinLength,
+  IsNotEmpty,
   IsOptional,
   IsNumber,
   Min,
@@ -18,13 +18,15 @@ export class CreateUserDto {
   // password!: string;
 
   @IsString()
+  @IsNotEmpty()
   firstName!: string;
 
   @IsString()
+  @IsNotEmpty()
   lastName!: string;
 
   @IsNumber()
-  @Min(0)
+  @Min(18)
   age!: number;
 }
 
