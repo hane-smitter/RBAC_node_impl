@@ -5,7 +5,6 @@ import { User } from "../entities/User";
 import { CreateUserDto, UpdateUserDto, UserRolesDto } from "../dtos/user.dto";
 import { AppDataSource } from "../database";
 import { Role } from "../entities/Role";
-import { CustomError } from "../utils/customError";
 
 const getRepo = AppDataSource.getRepository.bind(AppDataSource);
 
@@ -18,19 +17,21 @@ export class UserController {
     this.#rolesRepo = getRepo(Role);
   }
 
-  /** Gets all users */
+  /** Get all users */
   read = async (req: Request, res: Response) => {
     try {
       const users = await this.#usersRepo.find();
 
       res.status(200).respond(users);
+      return;
     } catch (error) {
       console.log(error);
       res.status(500).respond("Listing users failed!");
+      return;
     }
   };
 
-  /** Gets user identified by `id` */
+  /** Get user identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID = parseInt(req.params.id);
@@ -40,13 +41,15 @@ export class UserController {
       });
 
       res.respond(user);
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).respond("Users could not be fetched!");
+      res.status(500).respond("Getting user failed due to error!");
+      return;
     }
   };
 
-  /** Creates new user */
+  /** Create new user */
   create = async (req: Request, res: Response) => {
     try {
       const userData: CreateUserDto = req.body;
@@ -54,20 +57,16 @@ export class UserController {
       const user = this.#usersRepo.create(userData);
       await this.#usersRepo.save(user);
 
-      res.status(201).json({
-        status: "success",
-        data: user,
-      });
+      res.status(201).respond(user);
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error creating user",
-      });
+      res.status(500).respond("Error creating user");
+      return;
     }
   };
 
-  /** Updates user identified by `id` */
+  /** Update user identified by `id` */
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID = parseInt(req.params.id);
@@ -80,49 +79,40 @@ export class UserController {
         )
       );
       if (Object.keys(validUpdateData).length < 1) {
-        res.status(400).json({ err: "Invalid update" });
+        res.status(400).respond("Nothing to update");
         return;
       }
 
       await this.#usersRepo.update(userID, validUpdateData);
       const updatedUser = await this.#usersRepo.findOneBy({ id: userID });
 
-      res.status(200).json({
-        status: "success",
-        data: updatedUser,
-      });
+      res.status(200).respond(updatedUser);
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error updating user",
-      });
+      res.status(500).respond("Error updating user");
+      return;
     }
   };
 
-  /** Deletes user identified by `id` */
+  /** Delete user identified by `id` */
   delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID = parseInt(req.params.id);
 
       await this.#usersRepo.delete(userID);
 
-      res.json({
-        status: "success",
-        msg: "User deleted successfully",
-      });
+      res.respond("User deleted successfully");
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error Deleting user",
-      });
+      res.status(500).respond("Error Deleting user");
+      return;
     }
   };
 
   /* PERMISSIONS */
-  /** Gets roles assigned to a user identified by `id` */
+  /** Get roles assigned to a user identified by `id` */
   listRoles = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID: number = parseInt(req.params.id);
@@ -132,17 +122,16 @@ export class UserController {
         relations: ["roles"],
       });
 
-      res.json(userWithRoles);
+      res.respond(userWithRoles);
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error trying to list user roles",
-      });
+      res.status(500).respond("Error trying to list user roles");
+      return;
     }
   };
 
-  /** Sets role(s) on a user identified by `id` */
+  /** Add role(s) on a user identified by `id` */
   addRoles = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID: number = parseInt(req.params.id);
@@ -154,10 +143,7 @@ export class UserController {
         relations: ["roles"],
       });
       if (!userWithRoles) {
-        res.status(404).json({
-          status: "failed",
-          msg: "User not found",
-        });
+        res.status(404).respond("User not found");
         return;
       }
 
@@ -179,18 +165,16 @@ export class UserController {
 
       await this.#usersRepo.save(userWithRoles);
 
-      res.status(200).json({
-        status: "success",
-        msg: "Valid roles added to user",
-      });
+      res.status(200).respond("Valid roles added to user");
+      return;
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "failed", msg: "Updating user roles failed" });
+      console.log(error);
+      res.status(500).respond("Updating user roles failed");
+      return;
     }
   };
 
-  /** Drops role(s) on a user identified by `id` */
+  /** Drop role(s) on a user identified by `id` */
   dropRoles = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const userID: number = parseInt(req.params.id);
@@ -202,7 +186,7 @@ export class UserController {
       });
 
       if (!userWithRoles) {
-        res.status(404).json({ status: "failed", msg: "User not found" });
+        res.status(404).respond("User not found");
         return;
       }
 
@@ -220,13 +204,10 @@ export class UserController {
       userWithRoles.roles = filteredRoles;
       await this.#usersRepo.save(userWithRoles);
 
-      res.status(200).json({
-        status: "success",
-        msg: "Valid roles removed from user",
-      });
+      res.status(200).respond("Valid roles removed from user");
       return;
     } catch (error) {
-      res.status(500).json({ status: "failed", msg: "Removing roles failed!" });
+      res.status(500).respond("Removing roles failed!");
       return;
     }
   };

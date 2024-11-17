@@ -9,7 +9,7 @@ interface IResponseStructure {
 }
 
 // Middleware to set consistent JSON response
-const responseStructure = (req: Request, res: Response, next: NextFunction) => {
+const apiResponseFormat = (req: Request, res: Response, next: NextFunction) => {
   const structuredResponse: IResponseStructure = {
     status: "success",
     data: null,
@@ -62,4 +62,4 @@ const responseStructure = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export default responseStructure;
+export default apiResponseFormat;
