@@ -21,21 +21,21 @@ export class RoleController {
     this.#permissionsRepo = getRepo(Permission);
   }
 
-  /** Gets all roles */
+  /** Get all roles */
   read = async (req: Request, res: Response) => {
     try {
       const roles = await this.#rolesRepo.find();
 
-      res.json(roles);
+      res.respond(roles);
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({ status: "failed", msg: "Listing roles failed!" });
+      res.status(500).respond("Listing roles failed!");
       return;
     }
   };
 
-  /** Gets role identified by `id` */
+  /** Get role identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID = parseInt(req.params.id);
@@ -44,16 +44,21 @@ export class RoleController {
         id: roleID,
       });
 
-      res.json(role);
+      if (!role) {
+        res.status(404).respond("Role not found");
+        return;
+      }
+
+      res.respond(role);
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({ status: "failed", msg: "Fetching role failed!" });
+      res.status(500).respond("Fetching role failed!");
       return;
     }
   };
 
-  /** Creates new role */
+  /** Create new role */
   create = async (req: Request, res: Response) => {
     try {
       const roleData: CreateRoleDto = req.body;
@@ -63,10 +68,7 @@ export class RoleController {
         where: { name: roleData.name },
       });
       if (dupRole) {
-        res.status(400).json({
-          status: "failed",
-          msg: `The role - ${roleData.name} already exists!`,
-        });
+        res.status(400).respond(`The role - ${roleData.name} already exists!`);
         return;
       }
 
@@ -74,21 +76,14 @@ export class RoleController {
       const role = this.#rolesRepo.create(roleData);
       await this.#rolesRepo.save(role);
 
-      res.status(201).json({
-        status: "success",
-        msg: "Role created!",
-        data: role,
-      });
+      res.status(201).respond(role);
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error creating role",
-      });
+      res.status(500).respond("Error creating role");
     }
   };
 
-  /** Updates role identified by `id` */
+  /** Update role identified by `id` */
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID = parseInt(req.params.id);
@@ -101,12 +96,7 @@ export class RoleController {
         )
       );
       if (Object.keys(validUpdateData).length < 1) {
-        res.status(400).json({
-          status: "failed",
-          msg: `Empty update. Expected to find the keys: ${validUpdateKeys.join(
-            " | "
-          )}`,
-        });
+        res.status(400).respond("Nothing to update");
         return;
       }
 
@@ -114,46 +104,39 @@ export class RoleController {
         validUpdateData.name = validUpdateData.name.toUpperCase();
       }
 
-      await this.#rolesRepo.update(roleID, validUpdateData);
+      const { affected } = await this.#rolesRepo.update(
+        roleID,
+        validUpdateData
+      );
 
-      res.status(200).json({
-        status: "success",
-        msg: "Role updated!",
-      });
+      res.status(200).respond(` ${affected} Role updated!`);
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error updating role",
-      });
+      res.status(500).respond("Error updating role");
       return;
     }
   };
 
-  /** Deletes role identified by `id` */
+  /** Delete role identified by `id` */
   delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID = parseInt(req.params.id);
 
       // Related records in the junction table will be deleted bcoz `{ onDelete: "CASCADE" }` is set in entities definition
-      await this.#rolesRepo.delete(roleID);
+      const { affected } = await this.#rolesRepo.delete(roleID);
 
-      res.json({
-        status: "success",
-        msg: "Role deleted successfully",
-      });
+      res.respond(`${affected} Role deleted!`);
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error deleting role",
-      });
+      res.status(500).respond("Error deleting role");
+      return;
     }
   };
 
   /* PERMISSIONS */
-  /** Gets permissions assigned to a role identified by `id` */
+  /** Get permissions assigned to a role identified by `id` */
   listPermission = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID: number = parseInt(req.params.id);
@@ -163,17 +146,16 @@ export class RoleController {
         relations: ["permissions"],
       });
 
-      res.json(roleWithPermissions);
+      res.respond(roleWithPermissions);
+      return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error trying to list role permissions",
-      });
+      res.status(500).respond("Error trying to list role permissions");
+      return;
     }
   };
 
-  /** Sets permission(s) on a role identified by `id` */
+  /** Set permission(s) on a role identified by `id` */
   addPermission = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const roleID: number = parseInt(req.params.id);
@@ -185,10 +167,7 @@ export class RoleController {
         relations: ["permissions"],
       });
       if (!roleWithPermissions) {
-        res.status(404).json({
-          status: "failed",
-          msg: "Role not found",
-        });
+        res.status(404).respond("Role not found");
         return;
       }
 
@@ -213,14 +192,11 @@ export class RoleController {
 
       await this.#rolesRepo.save(roleWithPermissions);
 
-      res.status(200).json({
-        status: "success",
-        msg: "Valid permissions added to role",
-      });
+      res.status(200).respond("Valid permissions added to role");
+      return;
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "failed", msg: "Updating role permissions failed" });
+      res.status(500).respond("Updating role permissions failed");
+      return;
     }
   };
 
@@ -236,7 +212,7 @@ export class RoleController {
       });
 
       if (!roleWthPermissions) {
-        res.status(404).json({ status: "failed", msg: "Role not found" });
+        res.status(404).respond("Role not found");
         return;
       }
 
@@ -254,15 +230,10 @@ export class RoleController {
       roleWthPermissions.permissions = filteredPermissions;
       await this.#rolesRepo.save(roleWthPermissions);
 
-      res.status(200).json({
-        status: "success",
-        msg: "Valid permissions removed from role",
-      });
+      res.status(200).respond("Valid permissions removed from role");
       return;
     } catch (error) {
-      res
-        .status(500)
-        .json({ status: "failed", msg: "Removing permissions failed!" });
+      res.status(500).respond("Removing permissions failed!");
       return;
     }
   };

@@ -18,21 +18,21 @@ export class PermissionController {
     this.#permissionsRepo = getRepo(Permission);
   }
 
-  /** Gets all permissions */
+  /** Get all permissions */
   read = async (req: Request, res: Response) => {
     try {
       const permissions = await this.#permissionsRepo.find();
 
-      res.json(permissions);
+      res.respond(permissions);
+      return;
     } catch (error) {
       console.log(error);
-      res
-        .status(500)
-        .json({ status: "failed", msg: "Listing permissions failed!" });
+      res.status(500).respond("Listing permissions failed!");
+      return;
     }
   };
 
-  /** Gets permission identified by `id` */
+  /** Get permission identified by `id` */
   readOne = async (req: Request<{ id: string }>, res: Response) => {
     const permissionID = parseInt(req.params.id);
 
@@ -40,10 +40,15 @@ export class PermissionController {
       id: permissionID,
     });
 
-    res.json(permission);
+    if (!permission) {
+      res.status(404).respond("Permission not found");
+      return;
+    }
+
+    res.respond(permission);
   };
 
-  /** Creates new permission */
+  /** Create new permission */
   create = async (req: Request, res: Response) => {
     try {
       const permissionData: CreatePermissionDto = req.body;
@@ -53,54 +58,43 @@ export class PermissionController {
         where: { name: permissionData.name },
       });
       if (dupPermission) {
-        res.status(400).json({
-          status: "failed",
-          msg: `The permission name - \`${permissionData.name}\` already exists!`,
-        });
+        res
+          .status(400)
+          .respond(
+            `The permission name - \`${permissionData.name}\` already exists!`
+          );
         return;
       }
 
       permissionData.name = permissionData.name.toUpperCase();
-      const role = this.#permissionsRepo.create(permissionData);
-      await this.#permissionsRepo.save(role);
+      const permission = this.#permissionsRepo.create(permissionData);
+      await this.#permissionsRepo.save(permission);
 
-      res.status(201).json({
-        status: "success",
-        msg: "Permission created!",
-        data: role,
-      });
+      res.status(201).respond(permission);
       // Clear cache that stores fetched permissions from DB
       PermissionProvider.clearCache();
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error creating Permission",
-      });
+      res.status(500).respond("Error creating Permission");
       return;
     }
   };
 
-  /** Updates permission identified by `id` */
+  /** Update permission identified by `id` */
   update = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const permissionID = parseInt(req.params.id);
 
-      const validUpdateKeys = ["name", "description"];
+      const canUpdate = ["name", "description"];
       const incomingUpdate = req.body;
       const validUpdateData: UpdatePermissionDto = Object.fromEntries(
         Object.entries(incomingUpdate).filter(([key]) =>
-          validUpdateKeys.includes(key)
+          canUpdate.includes(key)
         )
       );
       if (Object.keys(validUpdateData).length < 1) {
-        res.status(400).json({
-          status: "failed",
-          msg: `Empty update. Expected to find the keys: ${validUpdateKeys.join(
-            " | "
-          )}`,
-        });
+        res.status(400).respond("Fields to update not known!");
         return;
       }
 
@@ -111,10 +105,9 @@ export class PermissionController {
         });
 
         if (permission) {
-          res.status(400).json({
-            status: "failed",
-            msg: `\`name\` ${validUpdateData.name} already taken!`,
-          });
+          res
+            .status(400)
+            .respond(`name \`${validUpdateData.name}\` already taken!`);
           return;
         }
 
@@ -126,43 +119,31 @@ export class PermissionController {
         validUpdateData
       );
 
-      res.status(200).json({
-        status: "success",
-        msg: `${affected} Permission updated`,
-      });
-      // Clear cache that stores fetched permissions from DB
+      res.status(200).respond(`${affected} Permission updated`);
+      // Clear cache that caches permissions fetched from DB
       PermissionProvider.clearCache();
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error updating permission",
-      });
+      res.status(500).respond("Error updating permission");
       return;
     }
   };
 
-  /** Deletes permission identified by `id` */
+  /** Delete permission identified by `id` */
   delete = async (req: Request<{ id: string }>, res: Response) => {
     try {
       const permissionID = parseInt(req.params.id);
 
       // Related records in the junction table will be deleted bcoz `{ onDelete: "CASCADE" }` is set in entities definition
       const { affected } = await this.#permissionsRepo.delete(permissionID);
-      res.json({
-        status: "success",
-        msg: `${affected} Permission deleted`,
-      });
+      res.respond(`${affected} Permission deleted`);
       // Clear cache that stores fetched permissions from DB
       PermissionProvider.clearCache();
       return;
     } catch (error) {
       console.log(error);
-      res.status(500).json({
-        status: "failed",
-        msg: "Error deleting permission",
-      });
+      res.status(500).respond("Error deleting permission");
       return;
     }
   };

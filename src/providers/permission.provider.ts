@@ -29,6 +29,7 @@ export class PermissionProvider {
   }
 
   static clearCache() {
+    console.log("Permis Cache CLEARED!!");
     this.#cache = {};
   }
 }

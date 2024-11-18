@@ -40,6 +40,11 @@ export class UserController {
         id: userID,
       });
 
+      if (!user) {
+        res.status(404).respond("User not found");
+        return;
+      }
+
       res.respond(user);
       return;
     } catch (error) {
