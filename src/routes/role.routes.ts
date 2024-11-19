@@ -7,38 +7,52 @@ import {
   UpdateRoleDto,
 } from "../dtos/role.dto";
 import { validationMiddleware } from "../middlewares/validation.middleware";
+import { requirePermission } from "../middlewares/requirePermission.middleware";
+import { PERMISSIONS as P } from "../constants";
 
 const router = Router();
 const roleController = new RoleController();
 
 // Get all roles
-router.get("/", roleController.read);
+router.get("/", requirePermission([P.Role_READ]), roleController.read);
 
 // Get a role by id
-router.get("/:id", roleController.readOne);
+router.get("/:id", requirePermission([P.Role_READ]), roleController.readOne);
 
 // Create a new role
-router.post("/", validationMiddleware(CreateRoleDto), roleController.create);
+router.post(
+  "/",
+  requirePermission([P.Role_ADD]),
+  validationMiddleware(CreateRoleDto),
+  roleController.create
+);
 
 // Update a role
 router.patch(
   "/:id",
+  requirePermission([P.Role_EDIT]),
   validationMiddleware(UpdateRoleDto),
   roleController.update
 );
 
 // Delete a role
-router.delete("/:id", roleController.delete);
+router.delete(
+  "/:id",
+  requirePermission([P.Role_REMOVE]),
+  roleController.delete
+);
 
 // PERMISSIONS
 router.get("/:id/permissions", roleController.listPermission);
 router.patch(
   "/:id/permissions/add",
+  requirePermission([P.Role_EDIT, P.Permission_READ]),
   validationMiddleware(RolePermissionsDto),
   roleController.addPermission
 );
 router.patch(
   "/:id/permissions/remove",
+  requirePermission([P.Role_EDIT, P.Permission_READ]),
   validationMiddleware(RolePermissionsDto),
   roleController.dropPermission
 );

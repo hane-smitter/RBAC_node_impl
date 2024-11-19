@@ -10,33 +10,49 @@ const router = Router();
 const userController = new UserController();
 
 // Get all users
-router.get("/", requirePermission([P.User_READ, P.User_ADD]), userController.read);
+router.get("/", requirePermission([P.User_READ]), userController.read);
 
 // Get a user by id
-router.get("/:id", userController.readOne);
+router.get("/:id", requirePermission([P.User_READ]), userController.readOne);
 
 // Create a new user
-router.post("/", validationMiddleware(CreateUserDto), userController.create);
+router.post(
+  "/",
+  requirePermission([P.User_ADD]),
+  validationMiddleware(CreateUserDto),
+  userController.create
+);
 
 // Update a user
 router.patch(
   "/:id",
+  requirePermission([P.User_EDIT]),
   validationMiddleware(UpdateUserDto),
   userController.update
 );
 
 // Delete a user
-router.delete("/:id", userController.delete);
+router.delete(
+  "/:id",
+  requirePermission([P.User_REMOVE]),
+  userController.delete
+);
 
 // ROLES
-router.get("/:id/roles", userController.listRoles);
+router.get(
+  "/:id/roles",
+  requirePermission([P.User_READ, P.Role_READ]),
+  userController.listRoles
+);
 router.patch(
   "/:id/roles/add",
+  requirePermission([P.User_EDIT, P.Role_READ]),
   validationMiddleware(UserRolesDto),
   userController.addRoles
 );
 router.patch(
   "/:id/roles/remove",
+  requirePermission([P.User_EDIT, P.Role_READ]),
   validationMiddleware(UserRolesDto),
   userController.dropRoles
 );

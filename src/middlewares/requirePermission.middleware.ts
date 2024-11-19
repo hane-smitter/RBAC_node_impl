@@ -42,6 +42,10 @@ export const requirePermission = (
     );
 
     const userID = parseInt(incomingUserID);
+    if (isNaN(userID)) {
+      res.status(401).respond("Invalid account provided");
+      return;
+    }
     // DB operation to get user permission as an aggregate number.
     // In secure systems(with auth), this permission number could be embedded on JWT token; so we can extract it for use here. DB call would be unnecessary
     const userPermissions = await getUserPermissions(userRepo, userID);
