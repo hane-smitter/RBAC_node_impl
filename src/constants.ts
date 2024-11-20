@@ -36,6 +36,6 @@ export const ROLES = {
   SuperAdmin: "SUPER_ADMIN",
   Admin: "ADMIN",
   Manager: "MANAGER",
-  Viewer: "VIEWER",
+  Viewer: "USER",
   Guest: "GUEST",
 };

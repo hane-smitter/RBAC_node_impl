@@ -21,7 +21,8 @@ export const seedRoles = async (dataSource: DataSource) => {
     },
     {
       name: R.Manager,
-      description: "Manage users(add, view and edit Users. Also assign Roles). Can view Roles.",
+      description:
+        "Manage users(add, view and edit Users. Also assign Roles). Can view Roles.",
     },
     {
       name: R.Viewer,
@@ -38,14 +39,15 @@ export const seedRoles = async (dataSource: DataSource) => {
   *Read Aspect*
   - All can view users
   - All can view users and roles except GUEST
-  - All can view users, roles and permissions except GUEST and VIEWER
+  - All can view users, roles and permissions except GUEST and USER
 
   *Create Aspect*
   - SUPER_ADMIN, ADMIN, MANAGER: Can (view, add, edit, assign/unassign roles) users, (view) roles
+  NOTE: MANAGER cannot remove user
   - SUPER_ADMIN, ADMIN: Can (view, add, edit, delete, assign/unassign roles) users, (view, add, edit, delete, assign/unassign permissions) roles (view) permissions
   - SUPER_ADMIN: Can (view, add, edit, delete, assign/unassign roles) users, (view, add, edit, delete, assign/unassign permissions) roles (view, add, edit, delete) permissions
  
-  Excluding GUEST and VIEWER:
+  Excluding GUEST and USER:
   - All can manage users, including assigning roles -   but MANAGER cannot: 1. delete a user, 2. manage roles(but can view), 3. manage permissions
   - Other than managing users, SUPER_ADMIN can manage roles and permissions while, ADMIN can manage roles only and is additonally able to only read permissions
   */
@@ -78,10 +80,10 @@ export const seedRoles = async (dataSource: DataSource) => {
 
           case R.Admin:
             // Assign all permissions but restrict ability to manage permissions - only allowing `PERMISSION:READ`, i.e viewing permissions
-            const isPermissionModifyName = /^PERMISSION(\w+)?:/;
+            const modifyPermissionPermit = /^PERMISSION(\w+)?:/;
             const adminPermissions = permissions.filter((permission) => {
               return (
-                !isPermissionModifyName.test(permission.name) ||
+                !modifyPermissionPermit.test(permission.name) ||
                 permission.name === P.Permission_READ
               );
             });
@@ -92,9 +94,9 @@ export const seedRoles = async (dataSource: DataSource) => {
           case R.Manager:
             // Assign permissions to 'manage users' except 'delete user'. Also grant 'view roles' permissions
             const managerPermissions = permissions.filter((permission) => {
-              const isUserModifyName = /^USER(\w+)?:/;
+              const modifyUserPermit = /^USER(\w+)?:/;
               return (
-                (isUserModifyName.test(permission.name) &&
+                (modifyUserPermit.test(permission.name) &&
                   permission.name !== P.User_REMOVE) ||
                 permission.name === P.Role_READ
               );
