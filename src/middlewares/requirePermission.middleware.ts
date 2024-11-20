@@ -33,7 +33,7 @@ export const requirePermission = (
     const resourcePermissionInstances = appPermissions.filter((appPermission) =>
       resourcePermissionNames.includes(appPermission.name)
     );
-    // Reduce `resourcePermissionInstances`(instances of `Permission` entity) to a whole number representing all permissions as an aggregate
+    // Reduce `resourcePermissionInstances` to a whole number representing all permissions as an aggregate
     const resourcePermissions = resourcePermissionInstances.reduce(
       (previousValue, currentValue) => {
         return previousValue | currentValue.serial_id; // Doing a bitwise OR using permission's `serial_id`
@@ -43,11 +43,11 @@ export const requirePermission = (
 
     const userID = parseInt(incomingUserID);
     if (isNaN(userID)) {
-      res.status(401).respond("Invalid account provided");
+      res.status(401).respond("Invalid account");
       return;
     }
     // DB operation to get user permission as an aggregate number.
-    // In secure systems(with auth), this permission number could be embedded on JWT token; so we can extract it for use here. DB call would be unnecessary
+    // In secure systems(with auth), this number could be embedded in JWT token; so we can extract it for use here rather than making a DB call
     const userPermissions = await getUserPermissions(userRepo, userID);
 
     // Checking if user has required permissions to access `next()` resource

@@ -21,10 +21,6 @@ export const seedPermissions = async (dataSource: DataSource) => {
       description: "Can edit user information",
     },
     {
-      name: P.UserRole_EDIT,
-      description: "Can edit user information and their roles",
-    },
-    {
       name: P.User_REMOVE,
       description: "Can remove user",
     },
@@ -40,10 +36,6 @@ export const seedPermissions = async (dataSource: DataSource) => {
     {
       name: P.Role_EDIT,
       description: "Can edit role information",
-    },
-    {
-      name: P.RolePermission_EDIT,
-      description: "Can edit role information and its permissions",
     },
     {
       name: P.Role_REMOVE,

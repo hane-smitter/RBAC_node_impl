@@ -12,41 +12,47 @@ export const seedRoles = async (dataSource: DataSource) => {
     {
       name: R.SuperAdmin,
       description:
-        "Manage users(create, update, delete accounts, assign roles), Manage roles(create, update, delete roles, assign permissions), Manage permission(create, update, delete roles)",
+        "Manage Users(add, view, edit and remove Users. Also assign Roles). Manage Roles(add, view, edit and remove Roles. Also assign Permissions). Manage Permissions(add, view, edit, remove Permissions).",
     },
     {
       name: R.Admin,
       description:
-        "Manage users(create, update, delete accounts, assign roles), Manage roles(create, update, delete roles, assign permissions)",
+        "Manage Users(add, view, edit and remove Users. Also assign Roles). Manage Roles(add, view, edit and remove Roles. Also assign Permissions). Can view Permissions.",
     },
     {
       name: R.Manager,
-      description: "Manage users(create, update accounts)",
+      description: "Manage users(add, view and edit Users. Also assign Roles). Can view Roles.",
     },
     {
       name: R.Viewer,
-      description: "Can view users, roles",
+      description: "Can view Users, Roles",
     },
     {
       name: R.Guest,
-      description: "Can view users",
+      description: "Can view Users",
     },
   ];
 
   /* 
   NOTES:
+  *Read Aspect*
   - All can view users
   - All can view users and roles except GUEST
   - All can view users, roles and permissions except GUEST and VIEWER
+
+  *Create Aspect*
+  - SUPER_ADMIN, ADMIN, MANAGER: Can (view, add, edit, assign/unassign roles) users, (view) roles
+  - SUPER_ADMIN, ADMIN: Can (view, add, edit, delete, assign/unassign roles) users, (view, add, edit, delete, assign/unassign permissions) roles (view) permissions
+  - SUPER_ADMIN: Can (view, add, edit, delete, assign/unassign roles) users, (view, add, edit, delete, assign/unassign permissions) roles (view, add, edit, delete) permissions
  
   Excluding GUEST and VIEWER:
   - All can manage users, including assigning roles -   but MANAGER cannot: 1. delete a user, 2. manage roles(but can view), 3. manage permissions
   - Other than managing users, SUPER_ADMIN can manage roles and permissions while, ADMIN can manage roles only and is additonally able to only read permissions
   */
 
-  //   for (const user of permissions) {
-  //     const newUser = rolesRepository.create(user);
-  //     await rolesRepository.save(newUser);
+  //   for (const role of roles) {
+  //     const newRole = rolesRepository.create(user);
+  //     await rolesRepository.save(newRole);
   //   }
   const permissions = await permissionsRepository.find();
   await Promise.all(
@@ -72,10 +78,10 @@ export const seedRoles = async (dataSource: DataSource) => {
 
           case R.Admin:
             // Assign all permissions but restrict ability to manage permissions - only allowing `PERMISSION:READ`, i.e viewing permissions
-            const isPermissionPermission = /^PERMISSION(\w+)?:/;
+            const isPermissionModifyName = /^PERMISSION(\w+)?:/;
             const adminPermissions = permissions.filter((permission) => {
               return (
-                !isPermissionPermission.test(permission.name) ||
+                !isPermissionModifyName.test(permission.name) ||
                 permission.name === P.Permission_READ
               );
             });
@@ -86,9 +92,9 @@ export const seedRoles = async (dataSource: DataSource) => {
           case R.Manager:
             // Assign permissions to 'manage users' except 'delete user'. Also grant 'view roles' permissions
             const managerPermissions = permissions.filter((permission) => {
-              const isUserPermission = /^USER(\w+)?:/;
+              const isUserModifyName = /^USER(\w+)?:/;
               return (
-                (isUserPermission.test(permission.name) &&
+                (isUserModifyName.test(permission.name) &&
                   permission.name !== P.User_REMOVE) ||
                 permission.name === P.Role_READ
               );

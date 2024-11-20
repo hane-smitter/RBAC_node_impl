@@ -146,6 +146,11 @@ export class RoleController {
         relations: ["permissions"],
       });
 
+      if (!roleWithPermissions) {
+        res.status(404).respond("Role not found");
+        return;
+      }
+
       res.respond(roleWithPermissions);
       return;
     } catch (error) {

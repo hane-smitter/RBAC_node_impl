@@ -127,6 +127,11 @@ export class UserController {
         relations: ["roles"],
       });
 
+      if (!userWithRoles) {
+        res.status(404).respond("User not found");
+        return;
+      }
+
       res.respond(userWithRoles);
       return;
     } catch (error) {

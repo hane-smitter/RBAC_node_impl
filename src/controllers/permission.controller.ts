@@ -100,11 +100,11 @@ export class PermissionController {
 
       // Check if `validUpdateData.name` is taken
       if (validUpdateData.name) {
-        const permission = await this.#permissionsRepo.findOne({
+        const dupPermission = await this.#permissionsRepo.findOne({
           where: { name: validUpdateData.name },
         });
 
-        if (permission) {
+        if (dupPermission) {
           res
             .status(400)
             .respond(`name \`${validUpdateData.name}\` already taken!`);
