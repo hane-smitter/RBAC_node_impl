@@ -25,7 +25,7 @@ export const seedRoles = async (dataSource: DataSource) => {
         "Manage users(add, view and edit Users. Also assign Roles). Can view Roles.",
     },
     {
-      name: R.Viewer,
+      name: R.User,
       description: "Can view Users, Roles",
     },
     {
@@ -105,7 +105,7 @@ export const seedRoles = async (dataSource: DataSource) => {
             roleToGrantPermissions.permissions = managerPermissions;
             break;
 
-          case R.Viewer:
+          case R.User:
             // Assign permission to 'view users' and 'view roles'
             const viewerPermissions = permissions.filter((permission) => {
               return (
