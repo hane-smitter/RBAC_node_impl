@@ -42,14 +42,23 @@ router.delete(
   roleController.delete
 );
 
-// PERMISSIONS
-router.get("/:id/permissions", roleController.listPermission);
+/* PERMISSIONS */
+// Get role's permissions
+router.get(
+  "/:id/permissions",
+  requirePermission([P.Role_READ, P.Permission_READ]),
+  roleController.listPermission
+);
+
+// Assign permission to a role
 router.patch(
   "/:id/permissions/add",
   requirePermission([P.Role_EDIT, P.Permission_READ]),
   validationMiddleware(RolePermissionsDto),
   roleController.addPermission
 );
+
+// Unassign permission from role
 router.patch(
   "/:id/permissions/remove",
   requirePermission([P.Role_EDIT, P.Permission_READ]),

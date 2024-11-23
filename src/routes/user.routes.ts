@@ -38,18 +38,24 @@ router.delete(
   userController.delete
 );
 
-// ROLES
+/* ROLES */
+// Get user's roles
 router.get(
   "/:id/roles",
   requirePermission([P.User_READ, P.Role_READ]),
   userController.listRoles
 );
+
+// Assign role to a user
 router.patch(
   "/:id/roles/add",
   requirePermission([P.User_EDIT, P.Role_READ]),
   validationMiddleware(UserRolesDto),
   userController.addRoles
 );
+
+
+// Unassign role from user
 router.patch(
   "/:id/roles/remove",
   requirePermission([P.User_EDIT, P.Role_READ]),

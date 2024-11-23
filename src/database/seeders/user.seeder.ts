@@ -11,38 +11,38 @@ export const seedUsers = async (dataSource: DataSource) => {
   const users = [
     // Super Admin
     {
-      firstName: "Juma",
-      lastName: "Khatibi",
+      firstName: "Hakuna",
+      lastName: "Matata",
       age: 25,
     },
     // Manager
     {
-      firstName: "Andrew",
-      lastName: "Amadou",
-      age: 52,
+      firstName: "Cinderella",
+      lastName: "Mitchell",
+      age: 45,
     },
-    // Viewer
+    // User
     {
-      firstName: "Cate",
-      lastName: "Stella",
+      firstName: "John",
+      lastName: "Doe",
       age: 28,
     },
     // Admin
     {
-      firstName: "Jane",
-      lastName: "Marara",
+      firstName: "Malik",
+      lastName: "Tembo",
       age: 32,
     },
     // Guest
     {
-      firstName: "Larsson",
-      lastName: "Nduta",
+      firstName: "Linda",
+      lastName: "Okello",
       age: 22,
     },
     // Guest
     {
-      firstName: "Cosmus",
-      lastName: "Daniella",
+      firstName: "Eva",
+      lastName: "Stephanie",
       age: 36,
     },
   ];
@@ -66,27 +66,27 @@ export const seedUsers = async (dataSource: DataSource) => {
         const person = userToAsssignRole.firstName;
 
         switch (person) {
-          case "Juma":
+          case "Hakuna":
             userToAsssignRole.roles = roles.filter((role) => {
               return role.name === R.SuperAdmin;
             });
             break;
 
-          case "Jane":
+          case "Malik":
             userToAsssignRole.roles = roles.filter((role) => {
               return role.name === R.Admin;
             });
             break;
 
-          case "Andrew":
+          case "Cinderella":
             userToAsssignRole.roles = roles.filter((role) => {
               return role.name === R.Manager;
             });
             break;
 
-          case "Cate":
+          case "John":
             userToAsssignRole.roles = roles.filter((role) => {
-              return role.name === R.Viewer;
+              return role.name === R.User;
             });
             break;
 
