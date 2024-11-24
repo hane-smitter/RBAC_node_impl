@@ -47,18 +47,15 @@ export const seedUsers = async (dataSource: DataSource) => {
     },
   ];
 
-  //   for (const user of users) {
-  //     const newUser = userRepository.create(user);
-  //     await userRepository.save(newUser);
-  //   }
-  const roles = await roleRepository.find();
+  const roles = await roleRepository.find(); // Fetch all roles
+  // Save users with assigned roles
   await Promise.all(
     users.map(async (user) => {
       const newUser = userRepository.create(user);
-      await userRepository.save(newUser);
+      const savedUser = await userRepository.save(newUser);
 
       const userToAsssignRole = await userRepository.findOne({
-        where: { firstName: user.firstName, lastName: user.lastName },
+        where: { id: savedUser.id },
         relations: ["roles"],
       });
 

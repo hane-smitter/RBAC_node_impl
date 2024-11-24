@@ -26,7 +26,7 @@ export const seedRoles = async (dataSource: DataSource) => {
     },
     {
       name: R.User,
-      description: "Can view Users, Roles",
+      description: "Can view Users and Roles",
     },
     {
       name: R.Guest,
