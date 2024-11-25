@@ -6,8 +6,6 @@ export const PERMISSIONS = {
   User_ADD: "USER:ADD",
   /** Permission to 'edit' user info */
   User_EDIT: "USER:EDIT",
-  /** Permission to 'edit' user role */
-  UserRole_EDIT: "USER_ROLE:EDIT", // TODO: Remove this permission
   /** Permission to 'remove' user */
   User_REMOVE: "USER:REMOVE",
   // roles
@@ -17,8 +15,6 @@ export const PERMISSIONS = {
   Role_ADD: "ROLE:ADD",
   /** Permission to 'edit' role info */
   Role_EDIT: "ROLE:EDIT",
-  /** Permission to 'edit' role's permission */
-  RolePermission_EDIT: "ROLE_PERMISSION:EDIT", // TODO: Remove this permission
   /** Permission to 'remove' role */
   Role_REMOVE: "ROLE:REMOVE",
   // permissions
