@@ -22,7 +22,7 @@ Project is open for suggestions, Bug reports and pull requests.
 
 ### How to run
 
-Ensure you have [Node.js](https://nodejs.org/en/download) and [MySQL](https://www.mysql.com/downloads/) installed on the platform you wish to run this project. Node.js version **18.11+** is recommended.
+Ensure you have [Node.js](https://nodejs.org/en/download) and [MySQL](https://www.mysql.com/downloads/) installed on the platform you wish to run this project. Node.js **v18.11+** is recommended.
 
 1. #### Clone this repository
 
@@ -76,7 +76,7 @@ Ensure you have [Node.js](https://nodejs.org/en/download) and [MySQL](https://ww
    npm run seed
    ```
 
-   This following users with asssigned roles will be created:
+   The following users with asssigned roles will be created:
 
    | firstName  | lastName  | role        |
    | ---------- | --------- | ----------- |
