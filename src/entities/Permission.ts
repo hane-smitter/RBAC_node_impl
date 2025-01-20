@@ -10,7 +10,7 @@ export class Permission {
   name!: string;
 
   // This column will be auto filled with MySQL trigger
-  // refer; `migrations/1729947215244-CreatePermissionsTrigger.ts`
+  // refer: `migrations/apprun/1729947215244-CreatePermissionsTrigger.ts`
   @Column({ type: "bigint", unique: true, insert: false, update: false })
   serial_id!: number;
 

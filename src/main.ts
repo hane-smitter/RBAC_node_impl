@@ -12,14 +12,14 @@ import apiResponseFormat from "./middlewares/apiResponseFormat.middleware";
 const app = express();
 const apiRouter = express.Router();
 
-// Main middlewares
+/* 1. Main middlewares */
 app.use(express.json());
 app.use(apiResponseFormat);
 
 // Server port number
 const PORT = parseInt(String(process.env.SERVER_PORT)) || 3000;
 
-// Application Routes
+/* 2. Application Routes */
 app.get("/", (req, res) => {
   res.send("Hello, TypeScript + Node.js + Express!");
 });
@@ -29,12 +29,12 @@ apiRouter.use("/roles", roleRoutes);
 apiRouter.use("/permissions", permissionRoutes);
 app.use("/api/v1", apiRouter);
 
-// Catch-all route for 404
+/* 3. Catch-all route(404 route) */
 app.use((req, res) => {
-  res.status(404).json({ status: "failed", msg: "404 Not Found" });
+  res.status(404).respond("Resource Not Found");
 });
 
-// Connect to DB
+/* 4. Database connection */
 AppDataSource.initialize()
   .then(async () => {
     // Run migration file - To add MySQL trigger
@@ -50,7 +50,7 @@ AppDataSource.initialize()
     console.log(error);
   });
 
-// Listen for the 'startServer' event and start the server
+/* 5. Start server, when 'startServer' event fires */
 app.on("startServer", () => {
   // Start the server and listen on the specified port
   app.listen(PORT, () => {
